@@ -14,7 +14,7 @@ public class TPC {
 	}
 	
 	public int FSENumber = 210;
-	public double FSELength = 2.3;
+	public double FSELength = 2.3; 
 	public double FSEzSpacing = .5;
 	public double FSEThickness = .035;
 	public double FSErSpacing = .05;
