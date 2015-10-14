@@ -4,7 +4,7 @@ import com.comsol.model.util.*;
 public class TPC {
 	public Model model;
 
-	public double TPCRadius = 360;
+	public double TPCRadius = 800; // mm? Need to verify!
 	public double electrodeThickness = 1;
 	public double TPCLength(){
 		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
