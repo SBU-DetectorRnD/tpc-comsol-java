@@ -12,22 +12,22 @@ public class TPC {
 	public double FSEOuterRadius(){
 		return TPCRadius + 2*FSEThickness + FSErSpacing;
 	}
-	
-	public int FSENumber = 210;
-	public double FSELength = 2.3; 
-	public double FSEzSpacing = .5;
-	public double FSEThickness = .035;
-	public double FSErSpacing = .05;
+	                             // FSE is strips.
+	public int FSENumber = 80; // Number of strips, 80 
+	public double FSELength = 9.0; // Strip length, 9.0 (mm)
+	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
+	public double FSEThickness = .035; // Strip thickness, 
+	public double FSErSpacing = .05; // Kapton tape length
 	public double offsetz() { return FSELength + FSEzSpacing;}
-	public double punchthroughThickness = .035;
-	public double mirrorLength = 4.6;
-	public double cageThickness = 10;
+	public double punchthroughThickness = .035; //Don't know what this is.
+	public double mirrorLength = 4.6; // Don't know what this is.
+	public double cageThickness = 10; 
 	public double cageEndSpacing = 300;
 	public double cageSideSpacing = 150;
 	
 	public double Resistance = 1000000;
 	public double Conductivity = .000004;
-	public double Voltage = 23000;
+	public double Voltage = 23000; //Voltage between one end and the middle membrane 34,000 Volts
 	
 	public static void main(String[] args){
 		run();
