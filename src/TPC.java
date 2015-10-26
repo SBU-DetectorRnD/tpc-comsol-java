@@ -67,7 +67,7 @@ public class TPC {
 		double cageh = TPCLength()+2*electrodeThickness+2*cageEndSpacing;
 		this.addRect("cageInRect",0,cagez,cagew,cageh);
 		this.addRect("cageOutRect",0,cagez-cageThickness,cagew+cageThickness,cageh+cageThickness*2);
-		this.addCircle("airsphere",1000,TPCLength()/2);
+		this.addCircle("airsphere",2000,TPCLength()/2); // changed airsphere radius from 1000 to 2000
 		this.model.geom("geom").run();
 	}
 	public void addRect(String name, double r, double z, double t, double h){
