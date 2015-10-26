@@ -21,9 +21,9 @@ public class TPC {
 	public double offsetz() { return FSELength + FSEzSpacing;}
 	public double punchthroughThickness = .035; //Don't know what this is.
 	public double mirrorLength = 4.6; // Don't know what this is.
-	public double cageThickness = 10; 
-	public double cageEndSpacing = 300;
-	public double cageSideSpacing = 150;
+	public double cageThickness = 10; // first cage parameter
+	public double cageEndSpacing = 300; // second cage parameter
+	public double cageSideSpacing = 150; // third cage parameter
 	
 	public double Resistance = 1000000;
 	public double Conductivity = .000004;
