@@ -62,11 +62,11 @@ public class TPC {
 		this.addRect("cathodeRect",0,TPCLength(),TPCRadius,1);
 		this.addFSEs();
 		
-		double cagez =-electrodeThickness-cageEndSpacing;
-		double cagew = FSEOuterRadius()+cageSideSpacing;
-		double cageh = TPCLength()+2*electrodeThickness+2*cageEndSpacing;
-		this.addRect("cageInRect",0,cagez,cagew,cageh);
-		this.addRect("cageOutRect",0,cagez-cageThickness,cagew+cageThickness,cageh+cageThickness*2);
+		//double cagez =-electrodeThickness-cageEndSpacing;
+		//double cagew = FSEOuterRadius()+cageSideSpacing;
+		//double cageh = TPCLength()+2*electrodeThickness+2*cageEndSpacing;
+		//this.addRect("cageInRect",0,cagez,cagew,cageh);
+		//this.addRect("cageOutRect",0,cagez-cageThickness,cagew+cageThickness,cageh+cageThickness*2);
 		this.addCircle("airsphere",2000,TPCLength()/2); // changed airsphere radius from 1000 to 2000
 		this.model.geom("geom").run();
 	}
@@ -99,7 +99,7 @@ public class TPC {
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
 		}
-		this.makeCageSelection();
+		//this.makeCageSelection();
 	}
 	public void makeAnodeSelection(){ 
 		this.model.selection().create("anodeSelection","Box");
@@ -126,12 +126,12 @@ public class TPC {
 		this.model.selection(name).set("xmax",rmax);
 		this.model.selection(name).set("ymax",zmax);
 	}
-	public void makeCageSelection(){
-		this.model.selection().create("cageVolumeSelection", "Explicit");
-		this.model.selection("cageVolumeSelection").set(new int[]{2});
-		this.model.selection().create("cageEdgeSelecction", "Adjacent");
-		this.model.selection("cageEdgeSelecction").set("input", new String[]{"cageVolumeSelection"});
-	}
+	//public void makeCageSelection(){
+		//this.model.selection().create("cageVolumeSelection", "Explicit");
+		//this.model.selection("cageVolumeSelection").set(new int[]{2});
+		//this.model.selection().create("cageEdgeSelecction", "Adjacent");
+		//this.model.selection("cageEdgeSelecction").set("input", new String[]{"cageVolumeSelection"});
+	//}
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
@@ -141,7 +141,7 @@ public class TPC {
 			makeFSETerminal(i);
 		}
 		this.makeCathodeTerminal();
-		this.makeCageTerminal();
+		//this.makeCageTerminal();
 	}
 	public void makeAnodeTerminal(){
 		this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
@@ -159,10 +159,10 @@ public class TPC {
 		this.model.physics("current").feature(terminal).selection().named(selection);
 		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
 	}
-	public void makeCageTerminal(){
-		this.model.physics("current").feature().create("cageTerminal", "Ground", 1);
-		this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");		
-	}
+	//public void makeCageTerminal(){
+		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);
+		//this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");		
+	//}
 	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
