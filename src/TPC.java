@@ -21,9 +21,14 @@ public class TPC {
 	public double offsetz() { return FSELength + FSEzSpacing;}
 	public double punchthroughThickness = .035; //Don't know what this is.
 	public double mirrorLength = 4.6; // Don't know what this is.
+	public double beampiperadius = 200; //radius of beam pipe 
+	public double groundstripwidth = 0.05; // Width of grounding strip
+	public double wallwidth = 50; //Width of Honeycomb wall
+	public double insulationwidth = 1; // insulator (start with this as air) width
 	public double cageThickness = 10; // first cage parameter
 	public double cageEndSpacing = 300; // second cage parameter
 	public double cageSideSpacing = 150; // third cage parameter
+	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius before inner conductive strips
 	
 	public double Resistance = 1000000;
 	public double Conductivity = .000004;
@@ -58,8 +63,8 @@ public class TPC {
 		this.model.geom("geom").axisymmetric(true);
 		this.model.geom("geom").lengthUnit("mm");
 		
-		this.addRect("anodeRect",0,-electrodeThickness,TPCRadius,1);
-		this.addRect("cathodeRect",0,TPCLength(),TPCRadius,1);
+		this.addRect("anodeRect",innerTPCradius,electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,1);
+		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,1);
 		this.addFSEs();
 		
 		//double cagez =-electrodeThickness-cageEndSpacing;
@@ -99,21 +104,21 @@ public class TPC {
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
 		}
-		//this.makeCageSelection();
+		//this.makeCageSelection(); 
 	}
 	public void makeAnodeSelection(){ 
 		this.model.selection().create("anodeSelection","Box");
 		this.model.selection("anodeSelection").set("entitydim",1);
-		this.model.selection("anodeSelection").set("xmin",TPCRadius/2);
-		this.model.selection("anodeSelection").set("xmax",TPCRadius+FSErSpacing);
+		this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
 		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
 		this.model.selection("anodeSelection").set("ymax",FSEzSpacing/4);		
 	}
 	public void makeCathodeSelection(){
 		this.model.selection().create("cathodeSelection","Box");
 		this.model.selection("cathodeSelection").set("entitydim",1);
-		this.model.selection("cathodeSelection").set("xmin",TPCRadius/2);
-		this.model.selection("cathodeSelection").set("xmax",TPCRadius+FSErSpacing);
+		this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+		this.model.selection("cathodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
 		this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
 		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
 	}
@@ -135,7 +140,7 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {3});
+		this.model.physics("current").selection().set(new int[] {1});
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);
@@ -147,11 +152,13 @@ public class TPC {
 		this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
 		this.model.physics("current").feature("anodeTerminal").selection().named("anodeSelection");		
 	}
+	@SuppressWarnings("deprecation")
 	public void makeCathodeTerminal(){
 		this.model.physics("current").feature().create("cathodeTerminal","Terminal");
 		this.model.physics("current").feature("cathodeTerminal").selection().named("cathodeSelection");
 		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
 	}
+	@SuppressWarnings("deprecation")
 	public void makeFSETerminal(int actualNumber){
 		String terminal = "FSE"+actualNumber+"Terminal";
 		String selection = "FSE"+actualNumber+"Selection"; 
@@ -159,10 +166,10 @@ public class TPC {
 		this.model.physics("current").feature(terminal).selection().named(selection);
 		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
 	}
-	//public void makeCageTerminal(){
-		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);
-		//this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");		
-	//}
+	public void makeCageTerminal(){
+		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal
+		this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");		
+	}
 	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
@@ -175,6 +182,7 @@ public class TPC {
 		}
 		this.connectVoltageSource();
 	}
+	@SuppressWarnings("deprecation")
 	public void connectAnode(){
 		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
 		this.addResistor("zeroResistor1","0","1","0[\u03a9]");
@@ -186,18 +194,21 @@ public class TPC {
 		this.addItoU("ItoUC","C1","G",FSENumber+1);
 		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
 	}
+	@SuppressWarnings("deprecation")
 	public void addResistor(String name, String node1, String node2, String value){
 		this.model.physics("cir").feature().create(name,"Resistor",-1);
 		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
 		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
 		this.model.physics("cir").feature(name).set("R",1,value);
 	}
+	@SuppressWarnings("deprecation")
 	public void addItoU(String name, String node1, String node2, int terminal){
 		this.model.physics("cir").feature().create(name, "ModelDeviceIV");
 		this.model.physics("cir").feature(name).set("V_src", 1, "root.comp1.ec.V0_"+terminal);
 		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
 		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
 	}
+	@SuppressWarnings("deprecation")
 	public void connectVoltageSource(){
 		this.model.physics("cir").feature().create("source","VoltageSource",-1);
 		this.model.physics("cir").feature("source").set("Connections",1,1,"C2");
@@ -210,6 +221,7 @@ public class TPC {
 		this.makeAir(new int[] {1,3});
 		}
 
+	@SuppressWarnings("deprecation")
 	public void makeCopper(){
 		this.model.material().create("mat1");
 	    this.model.material("mat1").name("Copper");
@@ -240,6 +252,7 @@ public class TPC {
 	    this.model.material("mat1").propertyGroup("linzRes").set("Tref", "298[K]");
 	    this.model.material("mat1").set("family", "copper");
 	}
+	@SuppressWarnings("deprecation")
 	public void makeAir(int[] regions){
 	    this.model.material().create("mat2");
 	    this.model.material("mat2").name("Air");
