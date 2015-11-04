@@ -30,7 +30,7 @@ public class TPC {
 	public double cageSideSpacing = 150; // third cage parameter
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius before inner conductive strips
 	
-	public double Resistance = 1000000;
+	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
 	public double Voltage = 23000; //Voltage between one end and the middle membrane 34,000 Volts
 	
