@@ -63,8 +63,9 @@ public class TPC {
 		this.model.geom("geom").axisymmetric(true);
 		this.model.geom("geom").lengthUnit("mm");
 		
-		this.addRect("anodeRect",innerTPCradius,electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,1);
-		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,1);
+		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
+		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
+		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCRadius+2*electrodeThickness);
 		this.addFSEs();
 		
 		//double cagez =-electrodeThickness-cageEndSpacing;
@@ -108,6 +109,7 @@ public class TPC {
 	}
 	public void makeAnodeSelection(){ 
 		this.model.selection().create("anodeSelection","Box");
+		this.model.selection("anodeSelection").set("condition", "inside");
 		this.model.selection("anodeSelection").set("entitydim",1);
 		this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
 		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
@@ -116,6 +118,7 @@ public class TPC {
 	}
 	public void makeCathodeSelection(){
 		this.model.selection().create("cathodeSelection","Box");
+		this.model.selection("cathodeSelection").set("condition", "inside");
 		this.model.selection("cathodeSelection").set("entitydim",1);
 		this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
 		this.model.selection("cathodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
@@ -125,6 +128,7 @@ public class TPC {
 	public void makeFSESelection(int actualNumber){}//	THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
 	public void makeBoxSelection(String name, double rmin, double zmin, double rmax, double zmax){
 		this.model.selection().create(name,"Box");
+		this.model.selection(name).set("condition", "inside");
 		this.model.selection(name).set("entitydim",1);
 		this.model.selection(name).set("xmin",rmin);
 		this.model.selection(name).set("ymin",zmin);
@@ -140,7 +144,7 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1});
+		this.model.physics("current").selection().set(new int[] {1,163}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);
@@ -217,8 +221,8 @@ public class TPC {
 	}
 	
 	public void setMaterials(){
-		this.makeCopper();
-		this.makeAir(new int[] {1,3});
+		this.makeCopper(); // Makes all domains copper.
+		this.makeAir(new int[] {1,163}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
