@@ -102,10 +102,22 @@ public class TPC {
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
+		this.makeInsulatorSelection();
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
 		}
 		//this.makeCageSelection(); 
+	}
+	public void makeInsulatorSelection() {
+		this.model.selection().create("insulatorSelection","Box");
+		this.model.selection("anodeSelection").set("condition", "inside");
+		this.model.selection("anodeSelection").set("entitydim",1);
+		this.model.selection("anodeSelection").set("xmin",TPCRadius+2*FSEThickness+FSErSpacing);
+		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+FSEzSpacing/4);
+		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
+		this.model.selection("anodeSelection").set("ymax",-electrodeThickness+TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+		// TODO Auto-generated method stub
+		
 	}
 	public void makeAnodeSelection(){ 
 		this.model.selection().create("anodeSelection","Box");
