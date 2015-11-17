@@ -110,12 +110,12 @@ public class TPC {
 	}
 	public void makeInsulatorSelection() {
 		this.model.selection().create("insulatorSelection","Box");
-		this.model.selection("anodeSelection").set("condition", "inside");
-		this.model.selection("anodeSelection").set("entitydim",1);
-		this.model.selection("anodeSelection").set("xmin",TPCRadius+2*FSEThickness+FSErSpacing);
-		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+FSEzSpacing/4);
-		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
-		this.model.selection("anodeSelection").set("ymax",-electrodeThickness+TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+		this.model.selection("insulatorSelection").set("condition", "inside");
+		this.model.selection("insulatorSelection").set("entitydim",1);
+		this.model.selection("insulatorSelection").set("xmin",TPCRadius+2*FSEThickness+FSErSpacing); 
+		this.model.selection("insulatorSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+FSEzSpacing/4);
+		this.model.selection("insulatorSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
+		this.model.selection("insulatorSelection").set("ymax",-electrodeThickness+TPCRadius+2*electrodeThickness+FSEzSpacing/4);
 		// TODO Auto-generated method stub
 		
 	}
@@ -137,7 +137,7 @@ public class TPC {
 		this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
 		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
 	}
-	public void makeFSESelection(int actualNumber){}//	THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
+	public void makeFSESelection(int actualNumber){}//	THIS METHOD DOSES NOT FUNCTION AND MUST BE OVERRIDDEN
 	public void makeBoxSelection(String name, double rmin, double zmin, double rmax, double zmax){
 		this.model.selection().create(name,"Box");
 		this.model.selection(name).set("condition", "inside");
@@ -156,10 +156,11 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,163}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,322}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);
+			makeInnerFSE(i);
 		}
 		this.makeCathodeTerminal();
 		//this.makeCageTerminal();
@@ -175,6 +176,13 @@ public class TPC {
 		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
 	}
 	@SuppressWarnings("deprecation")
+	public void makeInnerFSE(int actualNumber){
+		String terminal = "InnerFSE"+actualNumber+"Terminal";
+		String selection = "InnerFSE"+actualNumber+"Selection"; 
+		this.model.physics("current").feature().create(terminal,"Terminal");
+		this.model.physics("current").feature(terminal).selection().named(selection);
+		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+	}
 	public void makeFSETerminal(int actualNumber){
 		String terminal = "FSE"+actualNumber+"Terminal";
 		String selection = "FSE"+actualNumber+"Selection"; 
@@ -194,7 +202,9 @@ public class TPC {
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
 			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
-			this.addItoU("ItoU"+i,i+1+"","G",i+1);
+			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
+		    this.addResistor("ResistorTwo"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
+		    this.addItoU("ItoUTwo"+i,"inner"+(i+1),"G",2*i+1);
 		}
 		this.connectVoltageSource();
 	}
@@ -234,7 +244,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,163}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,322}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
