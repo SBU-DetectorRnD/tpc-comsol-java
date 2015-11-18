@@ -13,7 +13,7 @@ public class TPC {
 		return TPCRadius + 2*FSEThickness + FSErSpacing;
 	}
 	                             // FSE is strips.
-	public int FSENumber = 80; // Number of strips, 80 
+	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
@@ -65,7 +65,16 @@ public class TPC {
 		
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
+		
+		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCRadius+2*electrodeThickness);
+		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,FSEThickness , TPCRadius+2*electrodeThickness);
+		this.addRect("InnerWall",beampiperadius+FSEThickness ,-electrodeThickness,wallwidth ,TPCRadius+2*electrodeThickness );
+		this.addRect("GroundStrip2",beampiperadius+FSEThickness+wallwidth ,-electrodeThickness,FSEThickness ,TPCRadius+2*electrodeThickness );
+		this.addRect("InnerInsulator",beampiperadius+2*FSEThickness+wallwidth ,-electrodeThickness,insulationwidth ,TPCRadius+2*electrodeThickness );
 		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCRadius+2*electrodeThickness);
+		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,FSEThickness ,TPCRadius+2*electrodeThickness );
+		this.addRect("OuterWall",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCRadius+2*electrodeThickness);
+		this.addRect("GroundStrip4",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,FSEThickness , TPCRadius+2*electrodeThickness);
 		this.addFSEs();
 		
 		//double cagez =-electrodeThickness-cageEndSpacing;
@@ -102,23 +111,22 @@ public class TPC {
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
-		this.makeInsulatorSelection();
+		//this.makeInsulatorSelection();
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
 		}
 		//this.makeCageSelection(); 
 	}
-	public void makeInsulatorSelection() {
-		this.model.selection().create("insulatorSelection","Box");
-		this.model.selection("insulatorSelection").set("condition", "inside");
-		this.model.selection("insulatorSelection").set("entitydim",1);
-		this.model.selection("insulatorSelection").set("xmin",TPCRadius+2*FSEThickness+FSErSpacing); 
-		this.model.selection("insulatorSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+FSEzSpacing/4);
-		this.model.selection("insulatorSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
-		this.model.selection("insulatorSelection").set("ymax",-electrodeThickness+TPCRadius+2*electrodeThickness+FSEzSpacing/4);
-		// TODO Auto-generated method stub
+	//public void makeInsulatorSelection() {  //commented out unnecessary insulator selection since we are not connecting terminals to it
+	//	this.model.selection().create("insulatorSelection","Box");
+	//	this.model.selection("insulatorSelection").set("condition", "inside");
+	//	this.model.selection("insulatorSelection").set("entitydim",1);
+	//	this.model.selection("insulatorSelection").set("xmin",TPCRadius+2*FSEThickness+FSErSpacing); 
+	//	this.model.selection("insulatorSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+FSEzSpacing/4);
+	//	this.model.selection("insulatorSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
+	//	this.model.selection("insulatorSelection").set("ymax",-electrodeThickness+TPCRadius+2*electrodeThickness+FSEzSpacing/4);
 		
-	}
+	//}
 	public void makeAnodeSelection(){ 
 		this.model.selection().create("anodeSelection","Box");
 		this.model.selection("anodeSelection").set("condition", "inside");
@@ -214,11 +222,13 @@ public class TPC {
 		this.addResistor("zeroResistor1","0","1","0[\u03a9]");
 		this.addItoU("ItoU0","0","G",1);
 		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
+		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]");
 	}
 	public void connectCathode(){
 		this.addResistor("zeroResistor2","C1","C2","0[\u03a9]");
-		this.addItoU("ItoUC","C1","G",FSENumber+1);
+		this.addItoU("ItoUC","C1","G",2*FSENumber+1);
 		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
+		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
 	}
 	@SuppressWarnings("deprecation")
 	public void addResistor(String name, String node1, String node2, String value){
