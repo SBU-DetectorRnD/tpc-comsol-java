@@ -254,7 +254,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,322}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,4,6,327,329}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
