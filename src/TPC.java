@@ -68,15 +68,15 @@ public class TPC {
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		
-		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCRadius+2*electrodeThickness);
-		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,FSEThickness , TPCRadius+2*electrodeThickness);
-		this.addRect("InnerWall",beampiperadius+FSEThickness ,-electrodeThickness,wallwidth ,TPCRadius+2*electrodeThickness );
-		this.addRect("GroundStrip2",beampiperadius+FSEThickness+wallwidth ,-electrodeThickness,FSEThickness ,TPCRadius+2*electrodeThickness );
-		this.addRect("InnerInsulator",beampiperadius+2*FSEThickness+wallwidth ,-electrodeThickness,insulationwidth ,TPCRadius+2*electrodeThickness );
-		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCRadius+2*electrodeThickness);
-		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,FSEThickness ,TPCRadius+2*electrodeThickness );
-		this.addRect("OuterWall",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCRadius+2*electrodeThickness);
-		this.addRect("GroundStrip4",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,FSEThickness , TPCRadius+2*electrodeThickness);
+		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
+		this.addRect("InnerWall",beampiperadius+groundstripwidth ,-electrodeThickness,wallwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("GroundStrip2",beampiperadius+groundstripwidth+wallwidth ,-electrodeThickness,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("InnerInsulator",beampiperadius+2*groundstripwidth+wallwidth ,-electrodeThickness,insulationwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("OuterWall",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip4",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addFSEs();
 		
 		//double cagez =-electrodeThickness-cageEndSpacing;
@@ -238,23 +238,23 @@ public class TPC {
 	@SuppressWarnings("deprecation")
 	public void connectAnode(){
 		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
-		this.addResistor("zeroResistor1","0","1","0[\u03a9]");
+		this.addResistor("zeroResistor1outer","0","1","0[\u03a9]");
 		this.addItoU("ItoU0","0","G",1);
 		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
 		
-		this.addResistor("zeroResistor2","inner0","1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+		this.addResistor("zeroResistor1Inner","inner0","1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
 		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
 		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
 		
 	}
 	public void connectCathode(){
-		this.addResistor("zeroResistor2","C1","C2","0[\u03a9]");
+		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
 		this.addItoU("ItoUC","C1","G",2*FSENumber+1);
 		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
 		
-		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
-		//this.addItoU("ItoUCinner","C1","G",2*FSENumber+1);
-		//this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
+		this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
+		this.addItoU("ItoUCinner","C1","G",2*FSENumber);
+		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
 	}
 	@SuppressWarnings("deprecation")
 	public void addResistor(String name, String node1, String node2, String value){
