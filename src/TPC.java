@@ -12,7 +12,7 @@ public class TPC {
 		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
 	}
 	public double FSEOuterRadius(){
-		return TPCRadius + 2*FSEThickness + FSErSpacing;
+		return TPCRadius + 2*FSEThickness + FSErSpacing; //this is a test comment to test commit
 	}
 	                             // FSE is strips.
 	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
