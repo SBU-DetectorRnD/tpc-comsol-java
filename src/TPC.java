@@ -175,7 +175,7 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,328,330}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);
