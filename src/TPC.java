@@ -12,7 +12,7 @@ public class TPC {
 		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
 	}
 	public double FSEOuterRadius(){
-		return TPCRadius + 2*FSEThickness + FSErSpacing; //this is a test comment to test commit
+		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
 	                             // FSE is strips.
 	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
@@ -175,7 +175,7 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,327,329}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,328,330}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);
@@ -242,7 +242,7 @@ public class TPC {
 		this.addItoU("ItoU0","0","G",1);
 		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
 		
-		this.addResistor("zeroResistor1Inner","inner0","1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+		this.addResistor("zeroResistor1inner","inner0","1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
 		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
 		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
 		
@@ -280,7 +280,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,327,329}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,6,8,328,330}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
