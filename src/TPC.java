@@ -113,10 +113,10 @@ public class TPC {
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
-		this.makeGroundStripSelection("groundstripone",beampiperadius);
-		this.makeGroundStripSelection("groundstriptwo",beampiperadius+FSEThickness+wallwidth);
-		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
-		this.makeGroundStripSelection("groundstripfour",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth+wallwidth);
+		//this.makeGroundStripSelection("groundstripone",beampiperadius);
+		//this.makeGroundStripSelection("groundstriptwo",beampiperadius+FSEThickness+wallwidth);
+		//this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
+		//this.makeGroundStripSelection("groundstripfour",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth+wallwidth);
 		//this.makeInsulatorSelection();
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
