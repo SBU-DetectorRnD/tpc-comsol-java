@@ -162,9 +162,9 @@ public class TPC {
 		this.model.selection(name).set("xmax",rmax);
 		this.model.selection(name).set("ymax",zmax);
 	}
-	public void makeGroundStripSelection(String name, double radius){
-		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+FSEThickness+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
-	}
+	//public void makeGroundStripSelection(String name, double radius){
+		//this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+FSEThickness+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+	//}
 	
 	//public void makeCageSelection(){
 		//this.model.selection().create("cageVolumeSelection", "Explicit");
