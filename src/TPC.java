@@ -15,7 +15,7 @@ public class TPC {
 		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
 	                             // FSE is strips.
-	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
+	public int FSENumber = 4; // Number of strips, 80, changed to 4 to load faster 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
@@ -175,11 +175,11 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,24,26}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
-			makeFSETerminal(i);
-			//makeInnerFSE(i);
+			makeFSETerminal(i);        
+			makeInnerFSE(i);
 		}
 		this.makeCathodeTerminal();
 		//this.makeGroundStripTerminal();
@@ -229,7 +229,7 @@ public class TPC {
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
 			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
-			this.addItoU("ItoU"+i,i+1+"","G",i+1);
+			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
 		    //this.addResistor("ResistorTwo"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
 		    //this.addItoU("ItoUTwo"+i,"inner"+(i+1),"G",2*i+2);
 		}
@@ -249,7 +249,7 @@ public class TPC {
 	}
 	public void connectCathode(){
 		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
-		this.addItoU("ItoUC","C1","G",FSENumber+1);
+		this.addItoU("ItoUC","C1","G",2*FSENumber+1);
 		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
 		
 		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
@@ -280,7 +280,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,8,328,330}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,6,8,24,26}); //328,330}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
