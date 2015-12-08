@@ -182,7 +182,7 @@ public class TPC {
 			makeInnerFSE(i);
 		}
 		this.makeCathodeTerminal();
-		this.makeGroundStripTerminal();
+		//this.makeGroundStripTerminal();
 	}
 	public void makeAnodeTerminal(){
 		this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
@@ -209,18 +209,18 @@ public class TPC {
 		this.model.physics("current").feature(terminal).selection().named(selection);
 		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
 	}
-	public void makeGroundStripTerminal(){
+	//public void makeGroundStripTerminal(){
 		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal
 		//this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");
-		this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
-		this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
-		this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
-		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
-	}
+		//this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
+		//this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
+		//this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
+		//this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
+		//this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
+		//this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
+		//this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
+		//this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
+	//}
 	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
