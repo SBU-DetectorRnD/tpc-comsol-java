@@ -2,7 +2,7 @@ import com.comsol.model.*;
 import com.comsol.model.util.*;
 
 public class TPC {
-	private static final String GroundStrip = null;
+	// private static final String GroundStrip = null;
 
 	public Model model;
 
