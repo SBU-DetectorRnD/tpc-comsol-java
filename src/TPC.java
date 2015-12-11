@@ -230,8 +230,8 @@ public class TPC {
 		for(int i = 1; i < FSENumber; i++){
 			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
 			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
-		    //this.addResistor("ResistorTwo"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
-		    //this.addItoU("ItoUTwo"+i,"inner"+(i+1),"G",2*i+2);
+		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
+		    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
 		}
 		this.connectVoltageSource();
 	}
@@ -242,19 +242,19 @@ public class TPC {
 		this.addItoU("ItoU0","0","G",1);
 		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
 		
-		//this.addResistor("zeroResistor1inner","inner0","1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
-		//this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
-		//this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
+		this.addResistor("zeroResistor1inner","inner0","inner1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
+		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
 		
 	}
 	public void connectCathode(){
 		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
-		this.addItoU("ItoUC","C1","G",2*FSENumber+1);
+		this.addItoU("ItoUC","C1","G",2*FSENumber+1); //2*FSENumber+2*(FSENumber-1)-1 or 2*FSENumber+1
 		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
 		
 		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
-		//this.addItoU("ItoUCinner","C1","G",2*FSENumber);
-		//this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
+		//this.addItoU("ItoUCinner","C1","G",2*FSENumber+1); if doesn't work add innerC1 to G here
+		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
 	}
 	@SuppressWarnings("deprecation")
 	public void addResistor(String name, String node1, String node2, String value){
