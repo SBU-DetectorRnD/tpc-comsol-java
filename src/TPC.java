@@ -15,7 +15,7 @@ public class TPC {
 		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
 	                             // FSE is strips.
-	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
+	public int FSENumber = 20; // Number of strips, 80, changed to 4 to load faster 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
@@ -175,7 +175,7 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);        
@@ -280,7 +280,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,8,328,330}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
