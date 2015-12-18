@@ -36,6 +36,11 @@ public class TPCMirror extends TPC {
 		this.addRect("InnerFSE"+FSENumber+"Rect", r4,z4+offsetz()*(FSENumber-1),FSEThickness,FSELength); // changed r1 z1 to r4 z4 in attempt to create upper strip
 	}
 	
+	public void setMaterials(){
+		this.makeCopper(); // Makes all domains copper.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
+		}
+	
 	public void makeFSESelection(int actualNumber){
 		String name = "FSE"+actualNumber+"Selection";
 		String name1 = "InnerFSE"+actualNumber+"Selection";

@@ -6,7 +6,6 @@ public class TPCSingle extends TPC {
 	}
 	
 	
-	
 	public static void main(String[] args){
 		run();
 	}
@@ -35,5 +34,9 @@ public class TPCSingle extends TPC {
 		
 		this.makeBoxSelection(name,rmin,zmin,rmax,zmax);
 	}
-
+	
+	public void setMaterials(){
+		this.makeCopper(); // Makes all domains copper.
+		this.makeAir(new int[] {1,2,4,6,8}); //328,330}); // Changes chosen domains from copper to air.
+		}
 }
