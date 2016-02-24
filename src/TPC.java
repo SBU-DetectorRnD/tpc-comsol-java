@@ -15,7 +15,7 @@ import com.comsol.model.util.*;
 		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
 	                             // FSE is strips (Field Shaping Elements).
-	public int FSENumber = 4; // Number of strips on both inner and outer, total strip number=2*(FSENumber+FSENumber-1) 
+	public int FSENumber = 10; // Number of strips on both inner and outer, total strip number=2*(FSENumber+FSENumber-1) 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
@@ -182,7 +182,7 @@ import com.comsol.model.util.*;
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //last two used to be 2*FSENumber+10,2*FSENumber+12 //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,7,8,10,2*FSENumber+12,2*FSENumber+14}); //used to be {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}; Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);        
@@ -290,7 +290,7 @@ import com.comsol.model.util.*;
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,7,8,10,2*FSENumber+12,2*FSENumber+14}); //old: {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12} Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
