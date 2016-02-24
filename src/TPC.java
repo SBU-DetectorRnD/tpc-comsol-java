@@ -1,6 +1,11 @@
 import com.comsol.model.*;
 import com.comsol.model.util.*;
 
+// Attempted to create Upper Grounding Strip. 
+// Current code is NOT on github, could not commit for some reason.
+// This needs to be committed to github. 
+// There's a currently a meshing problem.
+
 public class TPC { 
 
 	public Model model;
@@ -67,7 +72,7 @@ public class TPC {
 		
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
-		this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth, -electrodeThickness+TPCLength()+2*electrodeThickness, UpperGroundStripThickness, groundstripwidth);
+		//this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth-1, -electrodeThickness+TPCLength()+2*electrodeThickness+3*FSErSpacing/4, UpperGroundStripThickness+2, groundstripwidth);
 		
 		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
@@ -114,7 +119,7 @@ public class TPC {
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
-		this.makeUpperGroundStripSelection("uppergroundstrip");
+		//this.makeUpperGroundStripSelection("uppergroundstrip");
 		this.makeGroundStripSelection("groundstripone",beampiperadius);
 		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
 		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
@@ -167,9 +172,9 @@ public class TPC {
 	public void makeGroundStripSelection(String name, double radius){
 		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
 	}
-	public void makeUpperGroundStripSelection(String uppername){
-		this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4);
-	}
+	//public void makeUpperGroundStripSelection(String uppername){
+	//	this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4-1, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+3*FSErSpacing/4, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4+1, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+3*FSErSpacing/4);
+	//}
 	
 	
 	//public void makeCageSelection(){
@@ -181,7 +186,7 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,7,9,25,27}); //last two used to be 2*FSENumber+10,2*FSENumber+12 //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //last two used to be 2*FSENumber+10,2*FSENumber+12 //,2,4,6,8,328,330}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);        
@@ -227,8 +232,8 @@ public class TPC {
 		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
 		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
 		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
-		this.model.physics("current").feature().create("GroundStripUpper","Ground",1);
-		this.model.physics("current").feature("GroundStripUpper").selection().named("uppergroundstrip");
+		//this.model.physics("current").feature().create("GroundStripUpper","Ground",1);
+		//this.model.physics("current").feature("GroundStripUpper").selection().named("uppergroundstrip");
 	}
 	
 	public void makeCircuit(){
@@ -289,7 +294,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,7,9,25,27}); //328,330}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
