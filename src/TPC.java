@@ -1,12 +1,8 @@
 import com.comsol.model.*;
 import com.comsol.model.util.*;
 
-// Attempted to create Upper Grounding Strip. 
-// Current code is NOT on github, could not commit for some reason.
-// This needs to be committed to github. 
-// There's a currently a meshing problem.
 
-public class TPC { 
+	public class TPC { 
 
 	public Model model;
 
@@ -72,15 +68,15 @@ public class TPC {
 		
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
-		//this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth-1, -electrodeThickness+TPCLength()+2*electrodeThickness+3*FSErSpacing/4, UpperGroundStripThickness+2, groundstripwidth);
+		this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
 		
 		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addRect("InnerWall",beampiperadius+groundstripwidth ,-electrodeThickness,wallwidth ,TPCLength()+2*electrodeThickness );
-		this.addRect("GroundStrip2",beampiperadius+groundstripwidth+wallwidth ,-electrodeThickness,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("GroundStrip2",beampiperadius+groundstripwidth+wallwidth ,-electrodeThickness,groundstripwidth ,TPCLength()+2*electrodeThickness+insulationwidth);
 		this.addRect("InnerInsulator",beampiperadius+2*groundstripwidth+wallwidth ,-electrodeThickness,insulationwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
-		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness+insulationwidth);
 		this.addRect("OuterWall",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip4",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addFSEs();
@@ -119,7 +115,7 @@ public class TPC {
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
-		//this.makeUpperGroundStripSelection("uppergroundstrip");
+		this.makeUpperGroundStripSelection("uppergroundstrip");
 		this.makeGroundStripSelection("groundstripone",beampiperadius);
 		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
 		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
@@ -170,11 +166,11 @@ public class TPC {
 		this.model.selection(name).set("ymax",zmax);
 	}
 	public void makeGroundStripSelection(String name, double radius){
-		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4+insulationwidth);
 	}
-	//public void makeUpperGroundStripSelection(String uppername){
-	//	this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4-1, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+3*FSErSpacing/4, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4+1, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+3*FSErSpacing/4);
-	//}
+	public void makeUpperGroundStripSelection(String uppername){
+		this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
+	}
 	
 	
 	//public void makeCageSelection(){
@@ -232,8 +228,8 @@ public class TPC {
 		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
 		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
 		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
-		//this.model.physics("current").feature().create("GroundStripUpper","Ground",1);
-		//this.model.physics("current").feature("GroundStripUpper").selection().named("uppergroundstrip");
+		this.model.physics("current").feature().create("GroundStripUpper","Ground",1);
+		this.model.physics("current").feature("GroundStripUpper").selection().named("uppergroundstrip");
 	}
 	
 	public void makeCircuit(){
