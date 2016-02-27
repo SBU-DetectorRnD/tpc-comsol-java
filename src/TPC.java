@@ -15,7 +15,7 @@ import com.comsol.model.util.*;
 		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
 	                             // FSE is strips (Field Shaping Elements).
-	public int FSENumber = 10; // Number of strips on both inner and outer, total strip number=2*(FSENumber+FSENumber-1) 
+	public int FSENumber = 80; // Number of strips on both inner and outer, total strip number=2*(FSENumber+FSENumber-1) 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
@@ -31,7 +31,7 @@ import com.comsol.model.util.*;
 	public double cageEndSpacing = 300; // second cage parameter
 	public double cageSideSpacing = 150; // third cage parameter
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius before inner conductive strips
-	public double UpperGroundStripThickness = TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+groundstripwidth-(beampiperadius+groundstripwidth+wallwidth);
+	public double UpperGroundStripThickness = TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+groundstripwidth-(beampiperadius+groundstripwidth+wallwidth)-2*insulationwidth;
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
@@ -53,7 +53,7 @@ import com.comsol.model.util.*;
 		this.makeTerminals();
 		this.makeCircuit();
 		this.setMaterials();
-		this.makeDataSet();
+		//this.makeDataSet();
 		this.makeSolver();
 	    this.model.mesh().create("mesh1", "geom");
 
@@ -68,7 +68,7 @@ import com.comsol.model.util.*;
 		
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
-		this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
+		this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
 		
 		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
@@ -169,7 +169,7 @@ import com.comsol.model.util.*;
 		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4+insulationwidth);
 	}
 	public void makeUpperGroundStripSelection(String uppername){
-		this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
+		this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4-insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
 	}
 	
 	
@@ -405,16 +405,16 @@ import com.comsol.model.util.*;
 	    this.model.material("mat2").selection().set(regions);
 	}
 	
-	public void export(String file){
-		this.makeDataSet();
+	//public void export(String file){
+	//	this.makeDataSet();
 		
-	}
-	public void makeDataSet(){
-	    this.model.result().dataset().create("cpt1", "CutPoint2D");
-	    this.model.result().dataset("cpt1").set("method", "grid");
-	    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
-	    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
-	}
+	//}
+	//public void makeDataSet(){
+	//    this.model.result().dataset().create("cpt1", "CutPoint2D");
+	//    this.model.result().dataset("cpt1").set("method", "grid");
+	//    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
+	//    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
+	//}
 
 	public void makeSolver(){
 	    this.model.study().create("study");
@@ -422,4 +422,5 @@ import com.comsol.model.util.*;
 	    this.model.study("study").feature("solver").activate("current", true);
 	    this.model.study("study").feature("solver").activate("cir", true);
 	}
-}
+	}
+//}

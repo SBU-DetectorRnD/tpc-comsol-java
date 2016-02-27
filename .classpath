@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.acdc_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.aco_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.api_1.0.0.jar"/>
@@ -77,7 +77,7 @@
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.microfluidics_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.migration_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.model.edit_1.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.model_1.0.0.jar" sourcepath="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.model_1.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.model_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.modelguiswing_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.modelguiswt_1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/COMSOL/COMSOL50/Multiphysics/plugins/com.comsol.molec_1.0.0.jar"/>
