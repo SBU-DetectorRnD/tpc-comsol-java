@@ -15,7 +15,7 @@ public class TPC {
 		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
 	                             // FSE is strips.
-	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
+	public int FSENumber = 65; // Number of strips, 80, changed to 4 to load faster 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
