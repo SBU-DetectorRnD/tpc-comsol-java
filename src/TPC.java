@@ -1,21 +1,21 @@
 import com.comsol.model.*;
 import com.comsol.model.util.*;
 
-public class TPC {
-	// private static final String GroundStrip = null;
+
+	public class TPC { 
 
 	public Model model;
 
-	public double TPCRadius = 800; // mm? Need to verify!
-	public double electrodeThickness = 1;
+	public double TPCRadius = 800; // in mm
+	public double electrodeThickness = 1; 
 	public double TPCLength(){
 		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
 	}
 	public double FSEOuterRadius(){
 		return TPCRadius + 2*FSEThickness + FSErSpacing; 
 	}
-	                             // FSE is strips.
-	public int FSENumber = 80; // Number of strips, 80, changed to 4 to load faster 
+	                             // FSE is strips (Field Shaping Elements).
+	public int FSENumber = 4; // Number of strips on both inner and outer, total strip number=2*(FSENumber+FSENumber-1) 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
@@ -31,6 +31,7 @@ public class TPC {
 	public double cageEndSpacing = 300; // second cage parameter
 	public double cageSideSpacing = 150; // third cage parameter
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius before inner conductive strips
+	public double UpperGroundStripThickness = TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth+groundstripwidth-(beampiperadius+groundstripwidth+wallwidth)-2*insulationwidth;
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
@@ -52,7 +53,7 @@ public class TPC {
 		this.makeTerminals();
 		this.makeCircuit();
 		this.setMaterials();
-		this.makeDataSet();
+		//this.makeDataSet();
 		this.makeSolver();
 	    this.model.mesh().create("mesh1", "geom");
 
@@ -67,17 +68,18 @@ public class TPC {
 		
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
+		//this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
 		
 		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addRect("InnerWall",beampiperadius+groundstripwidth ,-electrodeThickness,wallwidth ,TPCLength()+2*electrodeThickness );
-		this.addRect("GroundStrip2",beampiperadius+groundstripwidth+wallwidth ,-electrodeThickness,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("GroundStrip2",beampiperadius+groundstripwidth+wallwidth ,-electrodeThickness,groundstripwidth ,TPCLength()+2*electrodeThickness+insulationwidth);
 		this.addRect("InnerInsulator",beampiperadius+2*groundstripwidth+wallwidth ,-electrodeThickness,insulationwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
-		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness+insulationwidth);
 		this.addRect("OuterWall",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip4",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
-		this.addFSEs();
+		this.addGroundStrips();
 		
 		//double cagez =-electrodeThickness-cageEndSpacing;
 		//double cagew = FSEOuterRadius()+cageSideSpacing;
@@ -95,15 +97,15 @@ public class TPC {
 		this.model.geom("geom").feature(name).set("pos",pos);
 		this.model.geom("geom").feature(name).set("size",size);
 	}
-	public void addFSEs(){}//						THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
-	public void makeFSEArray(double offset,String[] inputs,int size){
-		this.model.geom("geom").feature().create("FSEArray","Array");
-		this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
-		this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
-		this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
-		this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
-		this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
-	}
+	public void addGroundStrips(){}//						THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
+	//public void makeFSEArray(double offset,String[] inputs,int size){
+		//this.model.geom("geom").feature().create("FSEArray","Array");
+		//this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
+		//this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
+		//this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
+		//this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
+		//this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
+	//}
 	public void addCircle(String name, double radius, double center){
 		this.model.geom("geom").feature().create(name,"Circle");
 		this.model.geom("geom").feature(name).set("r",radius);
@@ -113,16 +115,17 @@ public class TPC {
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
-		//this.makeGroundStripSelection("groundstripone",beampiperadius);
-		//this.makeGroundStripSelection("groundstriptwo",beampiperadius+FSEThickness+wallwidth);
-		//this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
-		//this.makeGroundStripSelection("groundstripfour",TPCRadius+3*FSEThickness+FSErSpacing+insulationwidth+wallwidth);
+		//this.makeUpperGroundStripSelection("uppergroundstrip");
+		this.makeGroundStripSelection("groundstripone",beampiperadius);
+		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
+		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
+		this.makeGroundStripSelection("groundstripfour",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
 		//this.makeInsulatorSelection();
-		for(int i = 0; i < FSENumber; i++){
-			this.makeFSESelection(i);
+		//for(int i = 0; i < FSENumber; i++){
+		//	this.makeFSESelection(i);
 		}
 		//this.makeCageSelection(); 
-	}
+	//}
 	//public void makeGroundStripOne() {  //commented out unnecessary insulator selection since we are not connecting terminals to it
 	//	this.model.selection().create("insulatorSelection","Box");
 	//	this.model.selection("insulatorSelection").set("condition", "inside");
@@ -162,9 +165,13 @@ public class TPC {
 		this.model.selection(name).set("xmax",rmax);
 		this.model.selection(name).set("ymax",zmax);
 	}
-	//public void makeGroundStripSelection(String name, double radius){
-		//this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+FSEThickness+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+	public void makeGroundStripSelection(String name, double radius){
+		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4+insulationwidth);
+	}
+	//public void makeUpperGroundStripSelection(String uppername){
+	//	this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4-insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
 	//}
+	
 	
 	//public void makeCageSelection(){
 		//this.model.selection().create("cageVolumeSelection", "Explicit");
@@ -175,14 +182,14 @@ public class TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,9,15,17}); //used to be {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}; Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
-			makeFSETerminal(i);
-			//makeInnerFSE(i);
+			makeFSETerminal(i);        
+			makeInnerFSE(i);
 		}
 		this.makeCathodeTerminal();
-		//this.makeGroundStripTerminal();
+		this.makeGroundStripTerminal();
 	}
 	public void makeAnodeTerminal(){
 		this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
@@ -202,6 +209,7 @@ public class TPC {
 		this.model.physics("current").feature(terminal).selection().named(selection);
 		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
 	}
+	@SuppressWarnings("deprecation")
 	public void makeFSETerminal(int actualNumber){
 		String terminal = "FSE"+actualNumber+"Terminal";
 		String selection = "FSE"+actualNumber+"Selection"; 
@@ -209,18 +217,20 @@ public class TPC {
 		this.model.physics("current").feature(terminal).selection().named(selection);
 		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
 	}
-	//public void makeGroundStripTerminal(){
+	public void makeGroundStripTerminal(){
 		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal
 		//this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");
-		//this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
-		//this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
-		//this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
-		//this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
-		//this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
-		//this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
-		//this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
-		//this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
-	//}
+		this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
+		this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
+		this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
+		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
+		this.model.physics("current").feature().create("GroundStripUpper","Ground",1);
+		this.model.physics("current").feature("GroundStripUpper").selection().named("uppergroundstrip");
+	}
 	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
@@ -229,9 +239,9 @@ public class TPC {
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
 			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
-			this.addItoU("ItoU"+i,i+1+"","G",i+1);
-		    //this.addResistor("ResistorTwo"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
-		    //this.addItoU("ItoUTwo"+i,"inner"+(i+1),"G",2*i+2);
+			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
+		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
+		    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
 		}
 		this.connectVoltageSource();
 	}
@@ -242,19 +252,19 @@ public class TPC {
 		this.addItoU("ItoU0","0","G",1);
 		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
 		
-		//this.addResistor("zeroResistor1inner","inner0","1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
-		//this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
-		//this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
+		this.addResistor("zeroResistor1inner","inner0","inner1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
+		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
 		
 	}
 	public void connectCathode(){
 		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
-		this.addItoU("ItoUC","C1","G",FSENumber+1);
+		this.addItoU("ItoUC","C1","G",2*FSENumber+1); //2*FSENumber+2*(FSENumber-1)-1 or 2*FSENumber+1
 		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
 		
 		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
-		//this.addItoU("ItoUCinner","C1","G",2*FSENumber);
-		//this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
+		//this.addItoU("ItoUCinner","C1","G",2*FSENumber+1); if doesn't work add innerC1 to G here
+		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
 	}
 	@SuppressWarnings("deprecation")
 	public void addResistor(String name, String node1, String node2, String value){
@@ -280,7 +290,7 @@ public class TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,8,328,330}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,6,9,15,17}); //4 strips: {1,2,4,6,9,15,17}. 60 strips: {1,2,4,6,9,249,251}  old: {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12} Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")
@@ -395,16 +405,16 @@ public class TPC {
 	    this.model.material("mat2").selection().set(regions);
 	}
 	
-	public void export(String file){
-		this.makeDataSet();
+	//public void export(String file){
+	//	this.makeDataSet();
 		
-	}
-	public void makeDataSet(){
-	    this.model.result().dataset().create("cpt1", "CutPoint2D");
-	    this.model.result().dataset("cpt1").set("method", "grid");
-	    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
-	    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
-	}
+	//}
+	//public void makeDataSet(){
+	//    this.model.result().dataset().create("cpt1", "CutPoint2D");
+	//    this.model.result().dataset("cpt1").set("method", "grid");
+	//    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
+	//    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
+	//}
 
 	public void makeSolver(){
 	    this.model.study().create("study");
@@ -412,4 +422,5 @@ public class TPC {
 	    this.model.study("study").feature("solver").activate("current", true);
 	    this.model.study("study").feature("solver").activate("cir", true);
 	}
-}
+	}
+//}
