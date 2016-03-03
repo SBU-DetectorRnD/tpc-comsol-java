@@ -20,7 +20,7 @@ public class TPCSingle extends TPC {
 		double r1 = TPCRadius;                // r1=beampiperadius+groundstripwidth+wallwidth+insulationwidth
 		
 		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);           //Ground Strip Rectangle
-		this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber); //Array of Ground strip rectangles
+	//	this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber); //Array of Ground strip rectangles
 	}
 
 	public void makeFSESelection(int actualNumber){  //make ground strips grounded.

@@ -68,7 +68,7 @@ import com.comsol.model.util.*;
 		
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
-		this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
+		//this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
 		
 		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
@@ -79,7 +79,7 @@ import com.comsol.model.util.*;
 		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness+insulationwidth);
 		this.addRect("OuterWall",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip4",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
-		this.addFSEs();
+		this.addGroundStrips();
 		
 		//double cagez =-electrodeThickness-cageEndSpacing;
 		//double cagew = FSEOuterRadius()+cageSideSpacing;
@@ -97,15 +97,15 @@ import com.comsol.model.util.*;
 		this.model.geom("geom").feature(name).set("pos",pos);
 		this.model.geom("geom").feature(name).set("size",size);
 	}
-	public void addFSEs(){}//						THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
-	public void makeFSEArray(double offset,String[] inputs,int size){
-		this.model.geom("geom").feature().create("FSEArray","Array");
-		this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
-		this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
-		this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
-		this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
-		this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
-	}
+	public void addGroundStrips(){}//						THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
+	//public void makeFSEArray(double offset,String[] inputs,int size){
+		//this.model.geom("geom").feature().create("FSEArray","Array");
+		//this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
+		//this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
+		//this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
+		//this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
+		//this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
+	//}
 	public void addCircle(String name, double radius, double center){
 		this.model.geom("geom").feature().create(name,"Circle");
 		this.model.geom("geom").feature(name).set("r",radius);
@@ -115,17 +115,17 @@ import com.comsol.model.util.*;
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
-		this.makeUpperGroundStripSelection("uppergroundstrip");
+		//this.makeUpperGroundStripSelection("uppergroundstrip");
 		this.makeGroundStripSelection("groundstripone",beampiperadius);
 		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
 		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
 		this.makeGroundStripSelection("groundstripfour",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
 		//this.makeInsulatorSelection();
-		for(int i = 0; i < FSENumber; i++){
-			this.makeFSESelection(i);
+		//for(int i = 0; i < FSENumber; i++){
+		//	this.makeFSESelection(i);
 		}
 		//this.makeCageSelection(); 
-	}
+	//}
 	//public void makeGroundStripOne() {  //commented out unnecessary insulator selection since we are not connecting terminals to it
 	//	this.model.selection().create("insulatorSelection","Box");
 	//	this.model.selection("insulatorSelection").set("condition", "inside");
@@ -168,9 +168,9 @@ import com.comsol.model.util.*;
 	public void makeGroundStripSelection(String name, double radius){
 		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4+insulationwidth);
 	}
-	public void makeUpperGroundStripSelection(String uppername){
-		this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4-insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
-	}
+	//public void makeUpperGroundStripSelection(String uppername){
+	//	this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4-insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
+	//}
 	
 	
 	//public void makeCageSelection(){
