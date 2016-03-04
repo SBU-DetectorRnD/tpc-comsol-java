@@ -1,13 +1,11 @@
-import com.comsol.model.Model;
+import com.comsol.model.Model;               // imports comsol models
 
-public class TPCSingle extends TPC {	
-	public double FSEOuterRadius(){
-		return TPCRadius + FSEThickness;
+public class TPCSingle extends TPC {	     //this file builds off of TPC.java
+	public double FSEOuterRadius(){          //FSEOuterRadius different because now only single strip.
+		return TPCRadius + FSEThickness;     
 	}
 	
-	
-	
-	public static void main(String[] args){
+		public static void main(String[] args){
 		run();
 	}
 	public static Model run(){

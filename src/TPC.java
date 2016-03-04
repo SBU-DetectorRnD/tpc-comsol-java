@@ -2,39 +2,40 @@ import com.comsol.model.*;
 import com.comsol.model.util.*;
 
 public class TPC {
-	// private static final String GroundStrip = null;
 
 	public Model model;
 
-	public double TPCRadius = 800; // mm? Need to verify!
+	public double TPCRadius = 800; //End of TPC right before outer strips
 	public double electrodeThickness = 1;
-	public double TPCLength(){
+	public double TPCLength(){ 
 		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
 	}
-	public double FSEOuterRadius(){
-		return TPCRadius + 2*FSEThickness + FSErSpacing; 
-	}
-	                             // FSE is strips.
-	public int FSENumber = 65; // Number of strips, 80, changed to 4 to load faster 
+	
+	public double FSEOuterRadius(){	return TPCRadius + 2*FSEThickness + FSErSpacing;} //End of TPC and strips, beginning of outer Insulator
+	                             
+	//FSE means Field Shaping Elements
+	public int FSENumber = 4; // Number of strips, 80, changed to 4 to load faster 
 	public double FSELength = 9.0; // Strip length, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness, 
 	public double FSErSpacing = .05; // Kapton tape length
 	public double offsetz() { return FSELength + FSEzSpacing;}
-	public double punchthroughThickness = .035; //Don't know what this is.
-	public double mirrorLength = 4.6; // Don't know what this is.
 	public double beampiperadius = 200; //radius of beam pipe 
 	public double groundstripwidth = 0.05; // Width of grounding strip
 	public double wallwidth = 50; //Width of Honeycomb wall
 	public double insulationwidth = 1; // insulator (start with this as air) width
-	public double cageThickness = 10; // first cage parameter
-	public double cageEndSpacing = 300; // second cage parameter
-	public double cageSideSpacing = 150; // third cage parameter
+	
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius before inner conductive strips
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
 	public double Voltage = 23000; //Voltage between one end and the middle membrane 34,000 Volts
+	
+	//public double mirrorLength = 4.6; // Don't know what this is.
+	//public double cageThickness = 10; // first cage parameter
+	//public double cageEndSpacing = 300; // second cage parameter
+	//public double cageSideSpacing = 150; // third cage parameter
+	//public double punchthroughThickness = .035; //Don't know what this is.	
 	
 	public static void main(String[] args){
 		run();
@@ -52,7 +53,7 @@ public class TPC {
 		this.makeTerminals();
 		this.makeCircuit();
 		this.setMaterials();
-		this.makeDataSet();
+		//this.makeDataSet();
 		this.makeSolver();
 	    this.model.mesh().create("mesh1", "geom");
 
@@ -73,9 +74,9 @@ public class TPC {
 		this.addRect("InnerWall",beampiperadius+groundstripwidth ,-electrodeThickness,wallwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("GroundStrip2",beampiperadius+groundstripwidth+wallwidth ,-electrodeThickness,groundstripwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("InnerInsulator",beampiperadius+2*groundstripwidth+wallwidth ,-electrodeThickness,insulationwidth ,TPCLength()+2*electrodeThickness );
-		this.addRect("OuterInsulator",TPCRadius+2*FSEThickness+FSErSpacing ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
-		this.addRect("GroundStrip3",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
-		this.addRect("OuterWall",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
+		this.addRect("OuterInsulator",FSEOuterRadius() ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip3",FSEOuterRadius()+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
+		this.addRect("OuterWall",FSEOuterRadius()+groundstripwidth+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip4",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addFSEs();
 		
@@ -395,16 +396,16 @@ public class TPC {
 	    this.model.material("mat2").selection().set(regions);
 	}
 	
-	public void export(String file){
-		this.makeDataSet();
+//	public void export(String file){
+//		this.makeDataSet();
 		
-	}
-	public void makeDataSet(){
-	    this.model.result().dataset().create("cpt1", "CutPoint2D");
-	    this.model.result().dataset("cpt1").set("method", "grid");
-	    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
-	    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
-	}
+//	}
+//	public void makeDataSet(){
+//	    this.model.result().dataset().create("cpt1", "CutPoint2D");
+//	    this.model.result().dataset("cpt1").set("method", "grid");
+//	    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
+//	    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
+//	}
 
 	public void makeSolver(){
 	    this.model.study().create("study");
