@@ -5,6 +5,15 @@ public class TPCMirror extends TPC {
 	public double TPCLength(){
 		return (FSELength + FSEzSpacing) * (FSENumber + 1)/2;
 	}
+	
+	public double TPCRadius(){
+		return (800);
+	}
+	
+	public double FSEOuterRadius(){
+		return (TPCRadius()+2*FSEThickness+FSErSpacing);
+	}
+	
 	public double offsetz(){return super.offsetz()/2;}
 	public void setVariables(){
 		this.FSENumber = this.FSENumber*2-1;
@@ -25,14 +34,14 @@ public class TPCMirror extends TPC {
 	}
 	
 	public void addFSEs(){
-		double z1 = FSEzSpacing/2;
-		double r1 = TPCRadius;
-		double z2 = z1 + (FSELength+FSEzSpacing)/2;
-		double r2 = r1 + FSEThickness +FSErSpacing;
-		double r3 = innerTPCradius;
-		double z3 = z2;
-		double r4 = r3+r2-r1;
-		double z4 = z1;
+		double z1 = FSEzSpacing/2;						//Third Strip Column
+		double r1 = TPCRadius();						//Third Strip Column
+		double z2 = z1 + (FSELength+FSEzSpacing)/2;      //Fourth Strip Column
+		double r2 = r1 + FSEThickness +FSErSpacing;     //Fourth Strip Column
+		double r3 = innerTPCradius;                     //First Strip Column
+		double z3 = z2;									//First Strip Column
+		double r4 = r3+r2-r1;							//Second Strip Column
+		double z4 = z1;									//Second Strip Column
 		
 		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);
 		this.addRect("FSE3Rect",r3,z3,FSEThickness,FSELength);
@@ -57,7 +66,7 @@ public class TPCMirror extends TPC {
 		String name = "FSE"+actualNumber+"Selection";
 		String name1 = "InnerFSE"+actualNumber+"Selection";
 		
-		double rmin = TPCRadius - FSErSpacing/4;
+		double rmin = TPCRadius() - FSErSpacing/4;
 		if (actualNumber%2 == 1){
 			rmin = rmin + FSEThickness + FSErSpacing;
 		}
@@ -94,8 +103,8 @@ public class TPCMirror extends TPC {
 		this.makeCathodeSelection();
 		this.makeGroundStripSelection("groundstripone",beampiperadius);
 		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
-		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
-		this.makeGroundStripSelection("groundstripfour",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
+		this.makeGroundStripSelection("groundstripthree",TPCRadius()+2*FSEThickness+FSErSpacing+insulationwidth);
+		this.makeGroundStripSelection("groundstripfour",TPCRadius()+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
 		}
@@ -107,7 +116,7 @@ public class TPCMirror extends TPC {
 		this.model.selection("anodeSelection").set("condition", "inside");
 		this.model.selection("anodeSelection").set("entitydim",1);
 		this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
-		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
+		this.model.selection("anodeSelection").set("xmax",TPCRadius()+2*FSEThickness+FSErSpacing+FSErSpacing);
 		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
 		this.model.selection("anodeSelection").set("ymax",FSEzSpacing/4);		
 	}
@@ -116,13 +125,13 @@ public class TPCMirror extends TPC {
 		this.model.selection("cathodeSelection").set("condition", "inside");
 		this.model.selection("cathodeSelection").set("entitydim",1);
 		this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
-		this.model.selection("cathodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
+		this.model.selection("cathodeSelection").set("xmax",TPCRadius()+2*FSEThickness+FSErSpacing+FSErSpacing);
 		this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
 		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
 	}
 	
 	public void makeGroundStripSelection(String name, double radius){
-		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius()+2*electrodeThickness+FSEzSpacing/4);
 	}
 	
 	public void makeCircuit(){

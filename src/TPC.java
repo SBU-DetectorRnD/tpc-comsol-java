@@ -5,16 +5,20 @@ public class TPC {
 
 	public Model model;
 
-	public double TPCRadius = 800; //End of TPC right before outer strips in r
-	public double electrodeThickness = 1;
-	public double TPCLength(){
-		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
-		} //Length of TPC in z direction. 
+	public double TPCRadius(){ 
+		return (800); //End of TPC right before outer strips in r. 800 value is catered towards TPCMirror.
+	}
 	
-	public double FSEOuterRadius(){	return TPCRadius + 2*FSEThickness + FSErSpacing;} //End of TPC and strips, beginning of outer Insulator
+	public double TPCLength(){           //Length of TPC in z direction.
+		return (FSELength + FSEzSpacing) * (FSENumber)+2*(FSEzSpacing+FSELength/2)-FSEzSpacing;
+		}   
+	
+	public double FSEOuterRadius(){
+		return TPCRadius();			  //End of TPC and strips, beginning of outer Insulator
+	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 4; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 10; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
@@ -24,8 +28,9 @@ public class TPC {
 	public double groundstripwidth = 0.05; // Width of grounding strip
 	public double wallwidth = 50; //Width of Honeycomb wall
 	public double insulationwidth = 1; // insulator (start with this as air) width
-	
+	public double electrodeThickness = 1;
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius right where inner strips begin
+	public double CathodeAnodeThickness = FSEOuterRadius()-innerTPCradius;
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
@@ -59,8 +64,8 @@ public class TPC {
 		this.model.geom("geom").axisymmetric(true); //Creates radial symmetry about r=0 
 		this.model.geom("geom").lengthUnit("mm");   //Length values in mm
 		
-		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
-		this.addRect("cathodeRect",innerTPCradius,TPCLength(),TPCRadius-innerTPCradius+2*FSEThickness+FSErSpacing,electrodeThickness);
+		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,CathodeAnodeThickness,electrodeThickness);
+		this.addRect("cathodeRect",innerTPCradius,TPCLength(),CathodeAnodeThickness,electrodeThickness);
 		
 		this.addRect("BeamPipe",0 ,-electrodeThickness,beampiperadius , TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip1",beampiperadius ,-electrodeThickness,groundstripwidth , TPCLength()+2*electrodeThickness);
@@ -70,7 +75,7 @@ public class TPC {
 		this.addRect("OuterInsulator",FSEOuterRadius() ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip3",FSEOuterRadius()+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("OuterWall",FSEOuterRadius()+groundstripwidth+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
-		this.addRect("GroundStrip4",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip4",TPCRadius()+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addFSEs();
 		
 		this.addCircle("airsphere",2000,TPCLength()/2); // 'observable universe' where everything contained
@@ -92,8 +97,8 @@ public class TPC {
 	}
 
 	public void setMaterials(){
-		this.makeCopper(); // Makes all domains copper. Different air domains from TPCMirror, Single.
-		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+2,2*FSENumber+4}); // Changes chosen domains from copper to air.
+		this.makeCopper(); // Makes all domains copper. In TPC.java, domains independent of FSENumber
+		this.makeAir(new int[] {1,2,4,6,8,10,12}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")

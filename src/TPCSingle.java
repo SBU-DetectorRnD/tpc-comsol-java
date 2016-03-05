@@ -2,7 +2,11 @@ import com.comsol.model.Model;               // imports comsol models
 
 public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	public double FSEOuterRadius(){          //FSEOuterRadius different because now only single strip.
-		return TPCRadius + FSEThickness;     
+		return TPCRadius() + FSEThickness;     
+	}
+	
+	public double TPCRadius(){          //FSEOuterRadius different because now only single strip.
+		return 800 - FSEThickness-FSErSpacing;     
 	}
 	
 		public static void main(String[] args){
@@ -19,8 +23,11 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	}
 	
 	public void addFSEs(){
-		double z1 = FSEzSpacing+FSELength/2;
-		double r1 = TPCRadius;
+		double z1 = FSEzSpacing+FSELength/2;  // outer strips
+		double r1 = TPCRadius();                // outer strips
+		
+		double z2 = FSEzSpacing+FSELength/2;  //inner strips
+		double r2 = innerTPCradius; 	      //inner strips
 		
 		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);
 		this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber);
@@ -38,7 +45,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	public void makeFSESelection(int actualNumber){
 		String name = "FSE"+actualNumber+"Selection";
 		
-		double rmin = TPCRadius - FSErSpacing/4;
+		double rmin = TPCRadius() - FSErSpacing/4;
 		double rmax = rmin + FSEThickness + FSErSpacing/2;
 		
 		double z1 = FSEzSpacing+FSELength/2;
@@ -61,7 +68,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper. Different air domains from TPC, TPCMirror.
-		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); // Changes chosen domains from copper to air. Differen
+		this.makeAir(new int[] {1,2,4,6,8,FSENumber+10,FSENumber+12}); // Changes chosen domains from copper to air. This will change when inner single strips are made.
 		}	
 	
 }
