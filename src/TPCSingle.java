@@ -12,6 +12,11 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		return new TPCSingle().model;
 	}
 	
+	public TPCSingle(){      //I think this is necessary when this.makeCircuit not in TPC.java
+		//this.makeCircuit();   //These are necessary once this.make* is actually used in this file
+		//this.makeTerminals();
+	}
+	
 	public void addFSEs(){
 		double z1 = FSEzSpacing+FSELength/2;
 		double r1 = TPCRadius;

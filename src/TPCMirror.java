@@ -1,6 +1,7 @@
 import com.comsol.model.Model;
 
 public class TPCMirror extends TPC {	
+	
 	public double TPCLength(){
 		return (FSELength + FSEzSpacing) * (FSENumber + 1)/2;
 	}
@@ -15,6 +16,11 @@ public class TPCMirror extends TPC {
 	}
 	public static Model run(){
 		return new TPCMirror().model;
+	}
+	
+	public TPCMirror(){      //I think this is necessary when this.makeCircuit, this.* not in TPC.java
+		this.makeCircuit(); 
+		this.makeTerminals();
 	}
 	
 	public void addFSEs(){
@@ -60,6 +66,37 @@ public class TPCMirror extends TPC {
 		
 		this.makeBoxSelection(name,rmin,zmin,rmax,zmax);
 		this.makeBoxSelection(name1,rmin2,zmin,rmax2,zmax);
+	
 	}
 
+	public void makeCircuit(){
+		this.model.physics().create("cir", "Circuit", "geom");
+		
+		this.connectAnode();
+		this.connectCathode();
+		for(int i = 1; i < FSENumber; i++){
+			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
+			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
+		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
+		    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
+		}
+		this.connectVoltageSource();
+	}
+	
+	public void setMaterials(){
+		this.makeCopper(); // Makes all domains copper.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
+		}
+	
+	public void makeTerminals(){
+		this.model.physics().create("current", "ConductiveMedia", "geom");
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.makeAnodeTerminal();
+		for(int i =0; i < FSENumber; i++){
+			makeFSETerminal(i);        
+			makeInnerFSE(i);
+		}
+		this.makeCathodeTerminal();
+		this.makeGroundStripTerminal();
+	}
 }
