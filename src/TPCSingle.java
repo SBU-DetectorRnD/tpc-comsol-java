@@ -59,4 +59,9 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.selection(name).set("ymax",zmax);
 	}
 	
+	public void setMaterials(){
+		this.makeCopper(); // Makes all domains copper. Different air domains from TPC, TPCMirror.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); // Changes chosen domains from copper to air. Differen
+		}	
+	
 }

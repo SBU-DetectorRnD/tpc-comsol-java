@@ -236,8 +236,8 @@ public class TPCMirror extends TPC {
 	}
 	
 	public void setMaterials(){
-		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
-		}
+		this.makeCopper(); // Makes all domains copper. Different air domains from TPC, TPCSingle.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); // Changes chosen domains from copper to air. Differen
+		}																    
 	
 }
