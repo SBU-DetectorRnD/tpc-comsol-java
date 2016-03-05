@@ -19,8 +19,9 @@ public class TPCMirror extends TPC {
 	}
 	
 	public TPCMirror(){      //I think this is necessary when this.makeCircuit, this.* not in TPC.java
-		this.makeCircuit(); 
+		this.makeSelections();
 		this.makeTerminals();
+		this.makeCircuit(); 
 	}
 	
 	public void addFSEs(){
@@ -69,6 +70,42 @@ public class TPCMirror extends TPC {
 	
 	}
 
+	public void makeSelections(){
+		this.makeAnodeSelection();
+		this.makeCathodeSelection();
+		this.makeGroundStripSelection("groundstripone",beampiperadius);
+		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
+		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
+		this.makeGroundStripSelection("groundstripfour",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
+		for(int i = 0; i < FSENumber; i++){
+			this.makeFSESelection(i);
+		}
+		//this.makeCageSelection(); 
+	}
+	
+	public void makeGroundStripSelection(String name, double radius){
+		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+	}
+	
+	public void makeAnodeSelection(){ 
+		this.model.selection().create("anodeSelection","Box");
+		this.model.selection("anodeSelection").set("condition", "inside");
+		this.model.selection("anodeSelection").set("entitydim",1);
+		this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
+		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
+		this.model.selection("anodeSelection").set("ymax",FSEzSpacing/4);		
+	}
+	public void makeCathodeSelection(){
+		this.model.selection().create("cathodeSelection","Box");
+		this.model.selection("cathodeSelection").set("condition", "inside");
+		this.model.selection("cathodeSelection").set("entitydim",1);
+		this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+		this.model.selection("cathodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
+		this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
+		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
+	}
+	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
 		
@@ -99,4 +136,16 @@ public class TPCMirror extends TPC {
 		this.makeCathodeTerminal();
 		this.makeGroundStripTerminal();
 	}
+
+	public void makeAnodeTerminal(){
+		this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
+		this.model.physics("current").feature("anodeTerminal").selection().named("anodeSelection");
+	}
+	
+	public void makeCathodeTerminal(){
+		this.model.physics("current").feature().create("cathodeTerminal","Terminal");
+		this.model.physics("current").feature("cathodeTerminal").selection().named("cathodeSelection");
+		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
+	}
+	
 }

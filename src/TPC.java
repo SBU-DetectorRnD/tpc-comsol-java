@@ -49,7 +49,7 @@ public class TPC {
 		
 		this.setVariables();
 		this.makeGeometry();
-		this.makeSelections();
+		//this.makeSelections();
 		//this.makeTerminals();
 		//this.makeCircuit();
 		this.setMaterials();
@@ -111,18 +111,18 @@ public class TPC {
 		this.model.geom("geom").feature(name).set("pos", new double[] {0,center});
 	}
 
-	public void makeSelections(){
-		this.makeAnodeSelection();
-		this.makeCathodeSelection();
-		this.makeGroundStripSelection("groundstripone",beampiperadius);
-		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
-		this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
-		this.makeGroundStripSelection("groundstripfour",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
-		for(int i = 0; i < FSENumber; i++){
-			this.makeFSESelection(i);
-		}
+	//public void makeSelections(){
+	//	this.makeAnodeSelection();
+	//	this.makeCathodeSelection();
+	//	this.makeGroundStripSelection("groundstripone",beampiperadius);
+	//	this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
+	//	this.makeGroundStripSelection("groundstripthree",TPCRadius+2*FSEThickness+FSErSpacing+insulationwidth);
+	//	this.makeGroundStripSelection("groundstripfour",TPCRadius+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
+	//	for(int i = 0; i < FSENumber; i++){
+	//		this.makeFSESelection(i);
+	//	}
 		//this.makeCageSelection(); 
-	}
+//	}
 	//public void makeGroundStripOne() {  //commented out unnecessary insulator selection since we are not connecting terminals to it
 	//	this.model.selection().create("insulatorSelection","Box");
 	//	this.model.selection("insulatorSelection").set("condition", "inside");
@@ -134,24 +134,24 @@ public class TPC {
 		
 	//}
 	
-	public void makeAnodeSelection(){ 
-		this.model.selection().create("anodeSelection","Box");
-		this.model.selection("anodeSelection").set("condition", "inside");
-		this.model.selection("anodeSelection").set("entitydim",1);
-		this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
-		this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
-		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
-		this.model.selection("anodeSelection").set("ymax",FSEzSpacing/4);		
-	}
-	public void makeCathodeSelection(){
-		this.model.selection().create("cathodeSelection","Box");
-		this.model.selection("cathodeSelection").set("condition", "inside");
-		this.model.selection("cathodeSelection").set("entitydim",1);
-		this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
-		this.model.selection("cathodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
-		this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
-		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
-	}
+	//public void makeAnodeSelection(){ 
+	//	this.model.selection().create("anodeSelection","Box");
+	//	this.model.selection("anodeSelection").set("condition", "inside");
+	//	this.model.selection("anodeSelection").set("entitydim",1);
+	//	this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+	//	this.model.selection("anodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
+	//	this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
+	//	this.model.selection("anodeSelection").set("ymax",FSEzSpacing/4);		
+	//}
+	//public void makeCathodeSelection(){
+	//	this.model.selection().create("cathodeSelection","Box");
+	//	this.model.selection("cathodeSelection").set("condition", "inside");
+	//	this.model.selection("cathodeSelection").set("entitydim",1);
+	//	this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+	//	this.model.selection("cathodeSelection").set("xmax",TPCRadius+2*FSEThickness+FSErSpacing+FSErSpacing);
+	//	this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
+	//	this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
+	//}
 	public void makeFSESelection(int actualNumber){}//	THIS METHOD DOSES NOT FUNCTION AND MUST BE OVERRIDDEN
 	public void makeBoxSelection(String name, double rmin, double zmin, double rmax, double zmax){
 		this.model.selection().create(name,"Box");
@@ -162,9 +162,9 @@ public class TPC {
 		this.model.selection(name).set("xmax",rmax);
 		this.model.selection(name).set("ymax",zmax);
 	}
-	public void makeGroundStripSelection(String name, double radius){
-		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
-	}
+	//public void makeGroundStripSelection(String name, double radius){
+	//	this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+	//}
 	
 	//public void makeCageSelection(){
 		//this.model.selection().create("cageVolumeSelection", "Explicit");
