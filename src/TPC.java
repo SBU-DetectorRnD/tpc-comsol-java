@@ -97,14 +97,14 @@ public class TPC {
 		this.model.geom("geom").feature(name).set("size",size);
 	}
 	public void addFSEs(){}//						THIS METHOD DOSES NOT FUNCITON AND MUST BE OVERRIDDEN
-	public void makeFSEArray(double offset,String[] inputs,int size){
-		this.model.geom("geom").feature().create("FSEArray","Array");
-		this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
-		this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
-		this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
-		this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
-		this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
-	}
+	//public void makeFSEArray(double offset,String[] inputs,int size){
+	//	this.model.geom("geom").feature().create("FSEArray","Array");
+	//	this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
+	//	this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
+	//	this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
+	//	this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
+	//	this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
+	//}
 	public void addCircle(String name, double radius, double center){
 		this.model.geom("geom").feature().create(name,"Circle");
 		this.model.geom("geom").feature(name).set("r",radius);
@@ -152,16 +152,16 @@ public class TPC {
 	//	this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
 	//	this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
 	//}
-	public void makeFSESelection(int actualNumber){}//	THIS METHOD DOSES NOT FUNCTION AND MUST BE OVERRIDDEN
-	public void makeBoxSelection(String name, double rmin, double zmin, double rmax, double zmax){
-		this.model.selection().create(name,"Box");
-		this.model.selection(name).set("condition", "inside");
-		this.model.selection(name).set("entitydim",1);
-		this.model.selection(name).set("xmin",rmin);
-		this.model.selection(name).set("ymin",zmin);
-		this.model.selection(name).set("xmax",rmax);
-		this.model.selection(name).set("ymax",zmax);
-	}
+	//public void makeFSESelection(int actualNumber){}//	THIS METHOD DOSES NOT FUNCTION AND MUST BE OVERRIDDEN
+	//public void makeBoxSelection(String name, double rmin, double zmin, double rmax, double zmax){
+	//	this.model.selection().create(name,"Box");
+	//	this.model.selection(name).set("condition", "inside");
+	//	this.model.selection(name).set("entitydim",1);
+	//	this.model.selection(name).set("xmin",rmin);
+	//	this.model.selection(name).set("ymin",zmin);
+	//	this.model.selection(name).set("xmax",rmax);
+	//	this.model.selection(name).set("ymax",zmax);
+	//}
 	//public void makeGroundStripSelection(String name, double radius){
 	//	this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
 	//}
@@ -184,43 +184,43 @@ public class TPC {
 	//	this.makeCathodeTerminal();
 	//	this.makeGroundStripTerminal();
 	//}
-	public void makeAnodeTerminal(){
-		this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
-		this.model.physics("current").feature("anodeTerminal").selection().named("anodeSelection");		
-	}
-	@SuppressWarnings("deprecation")
-	public void makeCathodeTerminal(){
-		this.model.physics("current").feature().create("cathodeTerminal","Terminal");
-		this.model.physics("current").feature("cathodeTerminal").selection().named("cathodeSelection");
-		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
-	}
-	@SuppressWarnings("deprecation")
-	public void makeInnerFSE(int actualNumber){
-		String terminal = "InnerFSE"+actualNumber+"Terminal";
-		String selection = "InnerFSE"+actualNumber+"Selection"; 
-		this.model.physics("current").feature().create(terminal,"Terminal");
-		this.model.physics("current").feature(terminal).selection().named(selection);
-		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
-	}
-	public void makeFSETerminal(int actualNumber){
-		String terminal = "FSE"+actualNumber+"Terminal";
-		String selection = "FSE"+actualNumber+"Selection"; 
-		this.model.physics("current").feature().create(terminal,"Terminal");
-		this.model.physics("current").feature(terminal).selection().named(selection);
-		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
-	}
-	public void makeGroundStripTerminal(){
-		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal
-		//this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");
-		this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
-		this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
-		this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
-		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
-		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
-	}
+	//public void makeAnodeTerminal(){
+	//	this.model.physics("current").feature().create("anodeTerminal", "Ground",1);
+	//	this.model.physics("current").feature("anodeTerminal").selection().named("anodeSelection");		
+	//}
+	//@SuppressWarnings("deprecation")
+	//public void makeCathodeTerminal(){
+	//	this.model.physics("current").feature().create("cathodeTerminal","Terminal");
+	//	this.model.physics("current").feature("cathodeTerminal").selection().named("cathodeSelection");
+	//	this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
+	//}
+	//@SuppressWarnings("deprecation")
+	//public void makeInnerFSE(int actualNumber){
+	//	String terminal = "InnerFSE"+actualNumber+"Terminal";
+	//	String selection = "InnerFSE"+actualNumber+"Selection"; 
+	//	this.model.physics("current").feature().create(terminal,"Terminal");
+	//	this.model.physics("current").feature(terminal).selection().named(selection);
+	//	this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+	//}
+	//public void makeFSETerminal(int actualNumber){
+	//	String terminal = "FSE"+actualNumber+"Terminal";
+	//	String selection = "FSE"+actualNumber+"Selection"; 
+	//	this.model.physics("current").feature().create(terminal,"Terminal");
+	//	this.model.physics("current").feature(terminal).selection().named(selection);
+	//	this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+	//}
+	//public void makeGroundStripTerminal(){
+	//	this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal
+	//	this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");
+	//	this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
+	//	this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
+	//	this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
+	//	this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
+	//	this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
+	//	this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
+	//	this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
+	//	this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
+	//}
 	
 	//public void makeCircuit(){
 	//	this.model.physics().create("cir", "Circuit", "geom");
@@ -235,48 +235,48 @@ public class TPC {
 	//	}
 	//	this.connectVoltageSource();
 	//}
-	@SuppressWarnings("deprecation")
-	public void connectAnode(){
-		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
-		this.addResistor("zeroResistor1outer","0","1","0[\u03a9]");
-		this.addItoU("ItoU0","0","G",1);
-		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
-		
-		this.addResistor("zeroResistor1inner","inner0","inner1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
-		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
-		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
-		
-	}
-	public void connectCathode(){
-		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
-		this.addItoU("ItoUC","C1","G",2*FSENumber+1); //2*FSENumber+2*(FSENumber-1)-1 or 2*FSENumber+1
-		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
-		
+	//@SuppressWarnings("deprecation")
+	//public void connectAnode(){
+	//	this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
+	//	this.addResistor("zeroResistor1outer","0","1","0[\u03a9]");
+	//	this.addItoU("ItoU0","0","G",1);
+	//	this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
+	//	
+	//	this.addResistor("zeroResistor1inner","inner0","inner1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+	//	this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
+	//	this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
+	//	
+	//}
+	//public void connectCathode(){
+	//	this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
+	//	this.addItoU("ItoUC","C1","G",2*FSENumber+1); //2*FSENumber+2*(FSENumber-1)-1 or 2*FSENumber+1
+	//	this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
+	//	
 		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
 		//this.addItoU("ItoUCinner","C1","G",2*FSENumber+1); if doesn't work add innerC1 to G here
-		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
-	}
-	@SuppressWarnings("deprecation")
-	public void addResistor(String name, String node1, String node2, String value){
-		this.model.physics("cir").feature().create(name,"Resistor",-1);
-		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
-		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
-		this.model.physics("cir").feature(name).set("R",1,value);
-	}
-	@SuppressWarnings("deprecation")
-	public void addItoU(String name, String node1, String node2, int terminal){
-		this.model.physics("cir").feature().create(name, "ModelDeviceIV");
-		this.model.physics("cir").feature(name).set("V_src", 1, "root.comp1.ec.V0_"+terminal);
-		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
-		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
-	}
-	@SuppressWarnings("deprecation")
-	public void connectVoltageSource(){
-		this.model.physics("cir").feature().create("source","VoltageSource",-1);
-		this.model.physics("cir").feature("source").set("Connections",1,1,"C2");
-		this.model.physics("cir").feature("source").set("Connections",2,1,"G");
-		this.model.physics("cir").feature("source").set("value",1,Voltage+"[V]");
-	}
+	//	this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
+	//}
+	//@SuppressWarnings("deprecation")
+	//public void addResistor(String name, String node1, String node2, String value){
+	//	this.model.physics("cir").feature().create(name,"Resistor",-1);
+	//	this.model.physics("cir").feature(name).set("Connections",1,1,node1);
+	//	this.model.physics("cir").feature(name).set("Connections",2,1,node2);
+	//	this.model.physics("cir").feature(name).set("R",1,value);
+	//}
+	//@SuppressWarnings("deprecation")
+	//public void addItoU(String name, String node1, String node2, int terminal){
+	//	this.model.physics("cir").feature().create(name, "ModelDeviceIV");
+	//	this.model.physics("cir").feature(name).set("V_src", 1, "root.comp1.ec.V0_"+terminal);
+	//	this.model.physics("cir").feature(name).set("Connections",1,1,node1);
+	//	this.model.physics("cir").feature(name).set("Connections",2,1,node2);
+	//}
+	//@SuppressWarnings("deprecation")
+	//public void connectVoltageSource(){
+	//	this.model.physics("cir").feature().create("source","VoltageSource",-1);
+	//	this.model.physics("cir").feature("source").set("Connections",1,1,"C2");
+	//	this.model.physics("cir").feature("source").set("Connections",2,1,"G");
+	//	this.model.physics("cir").feature("source").set("value",1,Voltage+"[V]");
+	//}
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper.
@@ -394,17 +394,6 @@ public class TPC {
 	    this.model.material("mat2").set("family", "air");
 	    this.model.material("mat2").selection().set(regions);
 	}
-	
-//	public void export(String file){
-//		this.makeDataSet();
-		
-//	}
-//	public void makeDataSet(){
-//	    this.model.result().dataset().create("cpt1", "CutPoint2D");
-//	    this.model.result().dataset("cpt1").set("method", "grid");
-//	    this.model.result().dataset("cpt1").set("gridx", "range(0,1,359)");
-//	    this.model.result().dataset("cpt1").set("gridy", "range(0,1,"+this.TPCLength()+")");
-//	}
 
 	public void makeSolver(){
 	    this.model.study().create("study");

@@ -41,6 +41,16 @@ public class TPCMirror extends TPC {
 		this.makeFSEArray(2*offsetz(),new String[]{"FSE1Rect","FSE2Rect","FSE3Rect","FSE4Rect"},(FSENumber-1)/2);
 		this.addRect("FSE"+FSENumber+"Rect", r1,z1+offsetz()*(FSENumber-1),FSEThickness,FSELength);
 		this.addRect("InnerFSE"+FSENumber+"Rect", r4,z4+offsetz()*(FSENumber-1),FSEThickness,FSELength); // changed r1 z1 to r4 z4 in attempt to create upper strip
+	
+}
+	
+	public void makeFSEArray(double offset,String[] inputs,int size){
+		this.model.geom("geom").feature().create("FSEArray","Array");
+		this.model.geom("geom").feature("FSEArray").selection("input").set(inputs);
+		this.model.geom("geom").feature("FSEArray").setIndex("displ","0",0);
+		this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
+		this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
+		this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
 	}
 	
 	public void makeFSESelection(int actualNumber){
@@ -69,7 +79,16 @@ public class TPCMirror extends TPC {
 		this.makeBoxSelection(name1,rmin2,zmin,rmax2,zmax);
 	
 	}
-
+	public void makeBoxSelection(String name, double rmin, double zmin, double rmax, double zmax){
+		this.model.selection().create(name,"Box");
+		this.model.selection(name).set("condition", "inside");
+		this.model.selection(name).set("entitydim",1);
+		this.model.selection(name).set("xmin",rmin);
+		this.model.selection(name).set("ymin",zmin);
+		this.model.selection(name).set("xmax",rmax);
+		this.model.selection(name).set("ymax",zmax);
+	}
+	
 	public void makeSelections(){
 		this.makeAnodeSelection();
 		this.makeCathodeSelection();
@@ -81,10 +100,6 @@ public class TPCMirror extends TPC {
 			this.makeFSESelection(i);
 		}
 		//this.makeCageSelection(); 
-	}
-	
-	public void makeGroundStripSelection(String name, double radius){
-		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
 	}
 	
 	public void makeAnodeSelection(){ 
@@ -106,6 +121,10 @@ public class TPCMirror extends TPC {
 		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
 	}
 	
+	public void makeGroundStripSelection(String name, double radius){
+		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius+2*electrodeThickness+FSEzSpacing/4);
+	}
+	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
 		
@@ -119,11 +138,34 @@ public class TPCMirror extends TPC {
 		}
 		this.connectVoltageSource();
 	}
+	public void connectAnode(){
+		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
+		this.addResistor("zeroResistor1outer","0","1","0[\u03a9]");
+		this.addItoU("ItoU0","0","G",1);
+		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
+		
+		this.addResistor("zeroResistor1inner","inner0","inner1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
+		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
+		
+	}
+	public void connectCathode(){
+		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
+		this.addItoU("ItoUC","C1","G",2*FSENumber+1); //2*FSENumber+2*(FSENumber-1)-1 or 2*FSENumber+1
+		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
+		
+		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
+		//this.addItoU("ItoUCinner","C1","G",2*FSENumber+1); if doesn't work add innerC1 to G here
+		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
+	}
 	
-	public void setMaterials(){
-		this.makeCopper(); // Makes all domains copper.
-		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
-		}
+	@SuppressWarnings("deprecation")
+	public void connectVoltageSource(){
+		this.model.physics("cir").feature().create("source","VoltageSource",-1);
+		this.model.physics("cir").feature("source").set("Connections",1,1,"C2");
+		this.model.physics("cir").feature("source").set("Connections",2,1,"G");
+		this.model.physics("cir").feature("source").set("value",1,Voltage+"[V]");
+	}
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
@@ -142,10 +184,60 @@ public class TPCMirror extends TPC {
 		this.model.physics("current").feature("anodeTerminal").selection().named("anodeSelection");
 	}
 	
+	public void makeFSETerminal(int actualNumber){
+		String terminal = "FSE"+actualNumber+"Terminal";
+		String selection = "FSE"+actualNumber+"Selection"; 
+		this.model.physics("current").feature().create(terminal,"Terminal");
+		this.model.physics("current").feature(terminal).selection().named(selection);
+		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void makeInnerFSE(int actualNumber){
+		String terminal = "InnerFSE"+actualNumber+"Terminal";
+		String selection = "InnerFSE"+actualNumber+"Selection"; 
+		this.model.physics("current").feature().create(terminal,"Terminal");
+		this.model.physics("current").feature(terminal).selection().named(selection);
+		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+	}
+	
 	public void makeCathodeTerminal(){
 		this.model.physics("current").feature().create("cathodeTerminal","Terminal");
 		this.model.physics("current").feature("cathodeTerminal").selection().named("cathodeSelection");
 		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
 	}
+	
+	public void makeGroundStripTerminal(){
+		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal
+		//this.model.physics("current").feature("cageTerminal").selection().named("cageEdgeSelecction");
+		this.model.physics("current").feature().create("GroundStripTerminalone", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminalone").selection().named("groundstripone");
+		this.model.physics("current").feature().create("GroundStripTerminaltwo", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminaltwo").selection().named("groundstriptwo");
+		this.model.physics("current").feature().create("GroundStripTerminalthree", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
+		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
+		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void addResistor(String name, String node1, String node2, String value){
+		this.model.physics("cir").feature().create(name,"Resistor",-1);
+		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
+		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
+		this.model.physics("cir").feature(name).set("R",1,value);
+	}
+	@SuppressWarnings("deprecation")
+	public void addItoU(String name, String node1, String node2, int terminal){
+		this.model.physics("cir").feature().create(name, "ModelDeviceIV");
+		this.model.physics("cir").feature(name).set("V_src", 1, "root.comp1.ec.V0_"+terminal);
+		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
+		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
+	}
+	
+	public void setMaterials(){
+		this.makeCopper(); // Makes all domains copper.
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); // Changes chosen domains from copper to air.
+		}
 	
 }
