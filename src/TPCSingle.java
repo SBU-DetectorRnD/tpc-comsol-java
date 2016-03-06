@@ -1,5 +1,7 @@
 import com.comsol.model.Model;               // imports comsol models
 
+//still need upper grounding strip
+
 public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	public double FSEOuterRadius(){          //FSEOuterRadius different because now only single strip.
 		return TPCRadius() + FSEThickness;     
@@ -16,21 +18,23 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		return new TPCSingle().model;
 	}
 	
-	public TPCSingle(){      //I think this is necessary when this.makeCircuit not in TPC.java
+	public TPCSingle(){             //I think this is necessary when this.makeCircuit not in TPC.java
 		//this.makeSelections();
 		//this.makeTerminals();     //These are necessary once this.make* is actually used in this file
 		//this.makeCircuit(); 
 	}
 	
 	public void addFSEs(){
-		double z1 = FSEzSpacing+FSELength/2;  // outer strips
-		double r1 = TPCRadius();                // outer strips
+		double z1 = FSEzSpacing+FSELength/2;     // outer strips
+		double r1 = TPCRadius();                 // outer strips
 		
-		double z2 = FSEzSpacing+FSELength/2;  //inner strips
-		double r2 = innerTPCradius; 	      //inner strips
+		double z2 = FSEzSpacing+FSELength/2;     //inner strips
+		double r2 = innerTPCradius; 	         //inner strips
 		
-		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);
-		this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber);
+		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);            //outer strips
+		this.addRect("FSE2Rect",r2,z2,FSEThickness,FSELength);			  //inner strips
+		this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber);  //outer strips
+		this.makeFSEArray(offsetz(),new String[]{"FSE2Rect"},FSENumber);  //inner strips. Not sure if this works yet.
 	}
 
 	public void makeFSEArray(double offset,String[] inputs,int size){

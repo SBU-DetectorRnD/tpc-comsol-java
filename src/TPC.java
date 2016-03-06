@@ -18,7 +18,7 @@ public class TPC {
 	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 10; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 6; // Number of strips in one vertical line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
@@ -31,6 +31,7 @@ public class TPC {
 	public double electrodeThickness = 1;
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius right where inner strips begin
 	public double CathodeAnodeThickness = FSEOuterRadius()-innerTPCradius;
+	public double UpperGroundStripThickness = TPCRadius()+2*FSEThickness+FSErSpacing+insulationwidth+groundstripwidth-(beampiperadius+groundstripwidth+wallwidth)-2*insulationwidth;
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
@@ -64,6 +65,7 @@ public class TPC {
 		this.model.geom("geom").axisymmetric(true); //Creates radial symmetry about r=0 
 		this.model.geom("geom").lengthUnit("mm");   //Length values in mm
 		
+		this.addRect("UpperGroundStrip", beampiperadius+groundstripwidth+wallwidth+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+insulationwidth, UpperGroundStripThickness, groundstripwidth);
 		this.addRect("anodeRect",innerTPCradius,-electrodeThickness,CathodeAnodeThickness,electrodeThickness);
 		this.addRect("cathodeRect",innerTPCradius,TPCLength(),CathodeAnodeThickness,electrodeThickness);
 		
