@@ -18,7 +18,7 @@ public class TPC {
 	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 6; // Number of strips in one vertical line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 8; // Number of strips in one vertical line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
@@ -77,7 +77,7 @@ public class TPC {
 		this.addRect("OuterInsulator",FSEOuterRadius() ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip3",FSEOuterRadius()+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("OuterWall",FSEOuterRadius()+groundstripwidth+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
-		this.addRect("GroundStrip4",TPCRadius()+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip4",FSEOuterRadius()+groundstripwidth+insulationwidth+wallwidth,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addFSEs();
 		
 		this.addCircle("airsphere",2000,TPCLength()/2); // 'observable universe' where everything contained
@@ -98,9 +98,14 @@ public class TPC {
 		this.model.geom("geom").feature(name).set("pos", new double[] {0,center});
 	}
 
+	//public void makeTerminals(){
+		//this.model.physics().create("current", "ConductiveMedia", "geom");
+		//this.model.physics("current").selection().set(new int[] {1,2,4,6,9,11,13}); //328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		//}
+	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper. In TPC.java, domains independent of FSENumber
-		this.makeAir(new int[] {1,2,4,6,8,10,12}); // Changes chosen domains from copper to air.
+		this.makeAir(new int[] {1,2,4,6,9,11,13}); // Changes chosen domains from copper to air.
 		}
 
 	@SuppressWarnings("deprecation")

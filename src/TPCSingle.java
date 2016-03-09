@@ -20,7 +20,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	
 	public TPCSingle(){             //I think this is necessary when this.makeCircuit not in TPC.java
 		//this.makeSelections();
-		//this.makeTerminals();     //These are necessary once this.make* is actually used in this file
+		this.makeTerminals();     //These are necessary once this.make* is actually used in this file
 		//this.makeCircuit(); 
 	}
 	
@@ -34,7 +34,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);            //outer strips
 		this.addRect("FSE2Rect",r2,z2,FSEThickness,FSELength);			  //inner strips
 		this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber);  //outer strips
-		this.makeFSEArray(offsetz(),new String[]{"FSE2Rect"},FSENumber);  //inner strips. Not sure if this works yet.
+		this.makeFSEArrayInner(offsetz(),new String[]{"FSE2Rect"},FSENumber);  //inner strips. Not sure if this works yet.
 	}
 
 	public void makeFSEArray(double offset,String[] inputs,int size){
@@ -44,6 +44,15 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.geom("geom").feature("FSEArray").setIndex("displ",offset,1);
 		this.model.geom("geom").feature("FSEArray").setIndex("fullsize","1",0);
 		this.model.geom("geom").feature("FSEArray").setIndex("fullsize",size+"",1);
+	}
+	
+	public void makeFSEArrayInner(double offset,String[] inputs,int size){
+		this.model.geom("geom").feature().create("FSEArrayInner","Array");
+		this.model.geom("geom").feature("FSEArrayInner").selection("input").set(inputs);
+		this.model.geom("geom").feature("FSEArrayInner").setIndex("displ","0",0);
+		this.model.geom("geom").feature("FSEArrayInner").setIndex("displ",offset,1);
+		this.model.geom("geom").feature("FSEArrayInner").setIndex("fullsize","1",0);
+		this.model.geom("geom").feature("FSEArrayInner").setIndex("fullsize",size+"",1);
 	}
 	
 	public void makeFSESelection(int actualNumber){
@@ -70,9 +79,14 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.selection(name).set("ymax",zmax);
 	}
 	
+	public void makeTerminals(){
+		this.model.physics().create("current", "ConductiveMedia", "geom");
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,9,2*FSENumber+11,2*FSENumber+13}); //328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		}
+	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper. Different air domains from TPC, TPCMirror.
-		this.makeAir(new int[] {1,2,4,6,8,FSENumber+10,FSENumber+12}); // Changes chosen domains from copper to air. This will change when inner single strips are made.
+		this.makeAir(new int[] {1,2,4,6,9,2*FSENumber+11,2*FSENumber+13}); // Changes chosen domains from copper to air. This will change when inner single strips are made.
 		}	
 	
 }

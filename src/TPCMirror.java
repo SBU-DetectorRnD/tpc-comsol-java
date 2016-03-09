@@ -30,7 +30,8 @@ public class TPCMirror extends TPC {
 	public TPCMirror(){      //I think this is necessary when this.makeCircuit, this.* not in TPC.java
 		this.makeSelections();
 		this.makeTerminals();
-		this.makeCircuit(); 
+		this.makeCircuit();
+		this.setMaterials();
 	}
 	
 	public void addFSEs(){
@@ -141,7 +142,6 @@ public class TPCMirror extends TPC {
 	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
-		
 		this.connectAnode();
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
