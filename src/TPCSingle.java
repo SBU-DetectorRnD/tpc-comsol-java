@@ -21,7 +21,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	public TPCSingle(){             //I think this is necessary when this.makeCircuit not in TPC.java
 		this.makeSelections();
 		this.makeTerminals();     //These are necessary once this.make* is actually used in this file
-	//	this.makeCircuit(); 
+		this.makeCircuit(); 
 	}
 	
 	public void addFSEs(){
@@ -177,19 +177,19 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
 	}
 	
-	//public void makeCircuit(){    //NEEDS TO BE CONFIGURED FOR SINGLE.
-	//	this.model.physics().create("cir", "Circuit", "geom");
+	public void makeCircuit(){    //NEEDS TO BE CONFIGURED FOR SINGLE.
+		this.model.physics().create("cir", "Circuit", "geom");
 		
-	//	this.connectAnode();
-	//	this.connectCathode();
-	//	for(int i = 1; i < FSENumber; i++){
-	//		this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
-	//		this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
-	//	    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
-	//	    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
-	//	}
-	//	this.connectVoltageSource();
-	//}
+		this.connectAnode();
+		this.connectCathode();
+		for(int i = 1; i < FSENumber; i++){
+			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
+			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
+		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
+		    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
+		}
+		this.connectVoltageSource();
+	}
 	public void connectAnode(){
 		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
 		this.addResistor("zeroResistor1outer","0","1","0[\u03a9]");
