@@ -30,8 +30,7 @@ public class TPCMirror extends TPC {
 	public TPCMirror(){      //I think this is necessary when this.makeCircuit, this.* not in TPC.java
 		this.makeSelections();
 		this.makeTerminals();
-		this.makeCircuit();
-		this.setMaterials();
+		this.makeCircuit(); 
 	}
 	
 	public void addFSEs(){
@@ -106,7 +105,6 @@ public class TPCMirror extends TPC {
 		this.makeGroundStripSelection("groundstriptwo",beampiperadius+groundstripwidth+wallwidth);
 		this.makeGroundStripSelection("groundstripthree",TPCRadius()+2*FSEThickness+FSErSpacing+insulationwidth);
 		this.makeGroundStripSelection("groundstripfour",TPCRadius()+2*FSEThickness+groundstripwidth+FSErSpacing+insulationwidth+wallwidth);
-		this.makeUpperGroundStripSelection("uppergroundstrip");
 		for(int i = 0; i < FSENumber; i++){
 			this.makeFSESelection(i);
 		}
@@ -136,12 +134,9 @@ public class TPCMirror extends TPC {
 		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius()+2*electrodeThickness+FSEzSpacing/4);
 	}
 	
-	public void makeUpperGroundStripSelection(String uppername){
-		this.makeBoxSelection(uppername, beampiperadius+groundstripwidth+wallwidth-FSErSpacing/4+insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness-FSErSpacing/4+insulationwidth, beampiperadius+groundstripwidth+wallwidth+UpperGroundStripThickness+FSErSpacing/4-insulationwidth, -electrodeThickness+TPCLength()+2*electrodeThickness+groundstripwidth+FSErSpacing/4+insulationwidth);
-	}
-	
 	public void makeCircuit(){
 		this.model.physics().create("cir", "Circuit", "geom");
+		
 		this.connectAnode();
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
@@ -183,7 +178,7 @@ public class TPCMirror extends TPC {
 	
 	public void makeTerminals(){
 		this.model.physics().create("current", "ConductiveMedia", "geom");
-		this.model.physics("current").selection().set(new int[] {1,2,4,6,9,4*FSENumber+9,4*FSENumber+11}); //328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
+		this.model.physics("current").selection().set(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); //328,330}); //,2,4,6,8,328,330}); // Domain Selection of electric current physics
 		this.makeAnodeTerminal();
 		for(int i =0; i < FSENumber; i++){
 			makeFSETerminal(i);        
@@ -232,8 +227,6 @@ public class TPCMirror extends TPC {
 		this.model.physics("current").feature("GroundStripTerminalthree").selection().named("groundstripthree");
 		this.model.physics("current").feature().create("GroundStripTerminalfour", "Ground", 1);
 		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
-		this.model.physics("current").feature().create("GroundStripUpper","Ground",1);
-		this.model.physics("current").feature("GroundStripUpper").selection().named("uppergroundstrip");
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -253,7 +246,7 @@ public class TPCMirror extends TPC {
 	
 	public void setMaterials(){
 		this.makeCopper(); // Makes all domains copper. Different air domains from TPC, TPCSingle.
-		this.makeAir(new int[] {1,2,4,6,9,4*FSENumber+9,4*FSENumber+11}); // Changes chosen domains from copper to air. Differen
+		this.makeAir(new int[] {1,2,4,6,8,2*FSENumber+10,2*FSENumber+12}); // Changes chosen domains from copper to air. Differen
 		}																    
 	
 }
