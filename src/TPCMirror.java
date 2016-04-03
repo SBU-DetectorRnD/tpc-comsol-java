@@ -137,7 +137,7 @@ public class TPCMirror extends TPC {
 	
 	// random number generator, made to allow for realistic range of resistance values
 	private double ResidualResistance(){
-		double number=50*Math.random()-25;
+		double number=2000*Math.random()-1000;
 		return(number);
 	}
 	
@@ -147,7 +147,7 @@ public class TPCMirror extends TPC {
 		this.connectAnode();
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
-			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance);
+			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+ResidualResistance());
 			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
 		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+ResidualResistance());
 		    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
@@ -158,7 +158,7 @@ public class TPCMirror extends TPC {
 		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
 		this.addResistor("zeroResistor1outer","0","1",0);
 		this.addItoU("ItoU0","0","G",1);
-		this.addResistor("Resistor0","1","G",Resistance);
+		this.addResistor("Resistor0","1","G",Resistance+ResidualResistance());
 		
 		this.addResistor("zeroResistor1inner","inner0","inner1",0);              // attempt here to connect inner FSE's to anode
 		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
