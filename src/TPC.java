@@ -18,11 +18,11 @@ public class TPC {
 	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 10; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 80; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
-	public double FSErSpacing = .05; // Kapton tape length in r
+	public double FSErSpacing = .05; // Kapton tape length in r, originially 0.05
 	public double offsetz() { return FSELength + FSEzSpacing;} //not sure what this is for right now
 	public double beampiperadius = 200; //radius of beam pipe, r direction
 	public double groundstripwidth = 0.05; // Width of grounding strip
@@ -34,7 +34,7 @@ public class TPC {
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
-	public double Voltage = 23000; //Voltage between one end and the middle membrane 34,000 Volts
+	public double Voltage = 5000; //Voltage between one end and the middle membrane 34,000 Volts (24,000 Volts?)
 	
 	public static void main(String[] args){
 		run();
@@ -75,7 +75,7 @@ public class TPC {
 		this.addRect("OuterInsulator",FSEOuterRadius() ,-electrodeThickness, insulationwidth, TPCLength()+2*electrodeThickness);
 		this.addRect("GroundStrip3",FSEOuterRadius()+insulationwidth ,-electrodeThickness ,groundstripwidth ,TPCLength()+2*electrodeThickness );
 		this.addRect("OuterWall",FSEOuterRadius()+groundstripwidth+insulationwidth,-electrodeThickness,wallwidth, TPCLength()+2*electrodeThickness);
-		this.addRect("GroundStrip4",FSEOuterRadius()+groundstripwidth+insulationwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
+		this.addRect("GroundStrip4",FSEOuterRadius()+insulationwidth+groundstripwidth+wallwidth ,-electrodeThickness ,groundstripwidth , TPCLength()+2*electrodeThickness);
 		this.addFSEs();
 		
 		this.addCircle("airsphere",2000,TPCLength()/2); // 'observable universe' where everything contained
