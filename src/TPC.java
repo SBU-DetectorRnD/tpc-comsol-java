@@ -18,7 +18,7 @@ public class TPC {
 	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 80; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 10; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
@@ -34,7 +34,7 @@ public class TPC {
 	
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
-	public double Voltage = 5000; //Voltage between one end and the middle membrane 34,000 Volts (24,000 Volts?)
+	public double Voltage = 34000; //Voltage between one end and the middle membrane 34,000 Volts (24,000 Volts?)
 	
 	public static void main(String[] args){
 		run();
