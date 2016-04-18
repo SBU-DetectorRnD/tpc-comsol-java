@@ -137,7 +137,7 @@ public class TPCMirror extends TPC {
 	
 	// random number generator, made to allow for realistic range of resistance values
 	private double ResidualResistance(){
-		double number=2000*Math.random()-1000;
+		double number=0*Math.random()-0;           //a*b+-c: c= max deviation (plus or minus), a=2*c
 		return(number);
 	}
 	
