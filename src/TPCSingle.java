@@ -91,6 +91,11 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.makeBoxSelection(name,radius-FSErSpacing/4,-electrodeThickness-FSEzSpacing/4, radius+groundstripwidth+FSErSpacing/4,TPCRadius()+2*electrodeThickness+FSEzSpacing/4);
 	}
 	
+	// random number generator, made to allow for realistic range of resistance values
+		private double ResidualResistance(){
+			double number=0*Math.random()-0;           //a*b+-c: c= max deviation (plus or minus), a=2*c
+			return(number);
+		}
 	
 	public void makeFSESelection(int actualNumber){
 		String name = "FSE"+actualNumber+"Selection";        //outer strips
@@ -183,32 +188,32 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.connectAnode();
 		this.connectCathode();
 		for(int i = 1; i < FSENumber; i++){
-			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+"[\u03a9]");
+			this.addResistor("Resistor"+i,i+"",i+1+"",Resistance+ResidualResistance());
 			this.addItoU("ItoU"+i,i+1+"","G",2*i+1);
-		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+"[\u03a9]");
+		    this.addResistor("InnerResistor"+i,"inner"+i, "inner"+(i+1), Resistance+ResidualResistance());
 		    this.addItoU("InnerItoU"+i,"inner"+(i+1),"G",2*i+2);
 		}
 		this.connectVoltageSource();
 	}
 	public void connectAnode(){
 		this.model.physics("cir").feature("gnd1").set("Connections",1,1,"G");
-		this.addResistor("zeroResistor1outer","0","1","0[\u03a9]");
+		this.addResistor("zeroResistor1outer","0","1",0);
 		this.addItoU("ItoU0","0","G",1);
-		this.addResistor("Resistor0","1","G",Resistance+"[\u03a9]");
+		this.addResistor("Resistor0","1","G",Resistance+ResidualResistance());
 		
-		this.addResistor("zeroResistor1inner","inner0","inner1","0[\u03a9]");              // attempt here to connect inner FSE's to anode
+		this.addResistor("zeroResistor1inner","inner0","inner1",0);              // attempt here to connect inner FSE's to anode
 		this.addItoU("ItoU0inner","inner0","G",2);                               // not sure if this works
-		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+"[\u03a9]"); // same may have to be done for cathode
+		this.addResistor("InnerFSEtoAnode","inner"+1,"G",Resistance+ResidualResistance()); // same may have to be done for cathode
 		
 	}
 	public void connectCathode(){
-		this.addResistor("zeroResistor2outer","C1","C2","0[\u03a9]");
+		this.addResistor("zeroResistor2outer","C1","C2",0);
 		this.addItoU("ItoUC","C1","G",2*FSENumber+1); //2*FSENumber+2*(FSENumber-1)-1 or 2*FSENumber+1
-		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+"[\u03a9]");
+		this.addResistor("Resistor"+FSENumber,FSENumber+"","C2",Resistance+ResidualResistance());
 		
 		//this.addResistor("zeroResistor2inner","C1","C2","0[\u03a9]");
 		//this.addItoU("ItoUCinner","C1","G",2*FSENumber+1); if doesn't work add innerC1 to G here
-		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+"[\u03a9]");
+		this.addResistor("InnerFSEtoCathode","inner"+FSENumber,"C2",Resistance+ResidualResistance());
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -220,11 +225,11 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	}
 	
 	@SuppressWarnings("deprecation")
-	public void addResistor(String name, String node1, String node2, String value){
+	public void addResistor(String name, String node1, String node2, double value ){
 		this.model.physics("cir").feature().create(name,"Resistor",-1);
 		this.model.physics("cir").feature(name).set("Connections",1,1,node1);
 		this.model.physics("cir").feature(name).set("Connections",2,1,node2);
-		this.model.physics("cir").feature(name).set("R",1,value);
+		this.model.physics("cir").feature(name).set("R",1,value + "[\u03a9]");
 	}
 	@SuppressWarnings("deprecation")
 	public void addItoU(String name, String node1, String node2, int terminal){

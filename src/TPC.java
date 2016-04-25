@@ -18,7 +18,7 @@ public class TPC {
 	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 10; // Number of strips in one vertical line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 60; // Number of strips in one vertical line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
@@ -26,7 +26,7 @@ public class TPC {
 	public double offsetz() { return FSELength + FSEzSpacing;} //not sure what this is for right now
 	public double beampiperadius = 200; //radius of beam pipe, r direction
 	public double groundstripwidth = 0.05; // Width of grounding strip
-	public double wallwidth = 50.78; //Width of Honeycomb wall
+	public double wallwidth = 50.78; //Width of Honeycomb wall. The 0.78mm makes rmin, rmax between 2nd and 3rd FSE columns 252mm, 800mm.
 	public double insulationwidth = 1; // insulator (start with this as air) width
 	public double electrodeThickness = 1;
 	public double innerTPCradius = beampiperadius+wallwidth+insulationwidth+2*groundstripwidth; // radius right where inner strips begin
@@ -35,7 +35,7 @@ public class TPC {
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
 	public double Voltage = 20400; // It seems Vcenter~(100*Voltage)/(FSENumber) when there's 
-								   // resistance or position error.
+								   // resistance or position error, at least for mirror.
 	public static void main(String[] args){
 		run();
 	}
