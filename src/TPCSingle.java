@@ -43,7 +43,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);            //outer strips
 		this.addRect("FSE2Rect",r2,z2,FSEThickness,FSELength);			  //inner strips
 		this.makeFSEArray(offsetz(),new String[]{"FSE1Rect"},FSENumber);  //outer strips
-		this.makeFSEArrayInner(offsetz(),new String[]{"FSE2Rect"},FSENumber);  //inner strips. Not sure if this works yet.
+		this.makeFSEArrayInner(offsetz(),new String[]{"FSE2Rect"},FSENumber);  //inner strips
 	}
 
 	public void makeFSEArray(double offset,String[] inputs,int size){
@@ -102,7 +102,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	
 	// random number generator, made to allow for realistic range of resistance values
 		private double ResidualResistance(){
-			double number=10000*Math.random()-5000;           //a*b+-c: c= max deviation (plus or minus), a=2*c
+			double number=0*Math.random()-0;           //a*b+-c: c= max deviation (plus or minus), a=2*c
 			return(number);
 		}
 	
@@ -116,7 +116,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		double rmin2 = innerTPCradius()-FSErSpacing/4;       //inner strips
 		double rmax2 = rmin2 + FSEThickness+FSErSpacing/2; //inner strips
 		
-		double z1 = FSEzSpacing+FSELength/2;
+		double z1 = FSEzSpacing/2 ;//FSEzSpacing+FSELength/2;
 
 		double zmin = z1 + offsetz()*actualNumber - FSEzSpacing/4; //Outer Strips
 		double zmax = zmin + FSELength + FSEzSpacing/2;            //Outer Strips
@@ -191,7 +191,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.physics("current").feature("GroundStripTerminalfour").selection().named("groundstripfour");
 	}
 	
-	public void makeCircuit(){    //NEEDS TO BE CONFIGURED FOR SINGLE.
+	public void makeCircuit(){    //Must work for single.
 		this.model.physics().create("cir", "Circuit", "geom");
 		
 		this.connectAnode();
