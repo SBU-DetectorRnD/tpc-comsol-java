@@ -35,7 +35,7 @@ public class TPC {
 	public double Resistance = 1000000; 
 	public double Conductivity = .000004;
 	public double Voltage = 20400; // It seems Vcenter~(100*Voltage)/(FSENumber) when there's 
-								   // resistance or position error, at least for mirror.
+								   // resistance or position error for mirror.
 	public static void main(String[] args){
 		run();
 	}

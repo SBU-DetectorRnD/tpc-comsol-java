@@ -3,13 +3,22 @@ import com.comsol.model.Model;               // imports comsol models
 //still need upper grounding strip
 
 public class TPCSingle extends TPC {	     //this file builds off of TPC.java
+	
 	public double FSEOuterRadius(){          //FSEOuterRadius different because now only single strip.
 		return TPCRadius() + FSEThickness;     
 	}
 	
-	public double TPCRadius(){          //FSEOuterRadius different because now only single strip.
-		return 800 - FSEThickness-FSErSpacing;     
+	public double innerTPCradius(){
+		return beampiperadius+wallwidth+insulationwidth+2*groundstripwidth+FSErSpacing+FSEThickness; //This is implemented so inner FSE ends at r=252mm
 	}
+	
+	public double TPCRadius(){          //FSEOuterRadius different because now only single strip.
+		return 800 ;//- FSEThickness-FSErSpacing;     
+	}
+	
+	public double TPCLength(){           //Length of TPC in z direction.
+		return (FSELength + FSEzSpacing) * (FSENumber);
+		}   
 	
 		public static void main(String[] args){
 		run();
@@ -25,11 +34,11 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	}
 	
 	public void addFSEs(){
-		double z1 = FSEzSpacing+FSELength/2;     // outer strips
+		double z1 = FSEzSpacing/2; //+FSELength/2;     // outer strips 
 		double r1 = TPCRadius();                 // outer strips
 		
-		double z2 = FSEzSpacing+FSELength/2;     //inner strips
-		double r2 = innerTPCradius; 	         //inner strips
+		double z2 = FSEzSpacing/2; //+FSELength/2;     //inner strips
+		double r2 = innerTPCradius(); 	         //inner strips
 		
 		this.addRect("FSE1Rect",r1,z1,FSEThickness,FSELength);            //outer strips
 		this.addRect("FSE2Rect",r2,z2,FSEThickness,FSELength);			  //inner strips
@@ -72,7 +81,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.selection().create("anodeSelection","Box");
 		this.model.selection("anodeSelection").set("condition", "inside");
 		this.model.selection("anodeSelection").set("entitydim",1);
-		this.model.selection("anodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+		this.model.selection("anodeSelection").set("xmin",innerTPCradius()-FSEzSpacing/4);
 		this.model.selection("anodeSelection").set("xmax",TPCRadius()+2*FSEThickness+FSErSpacing+FSErSpacing);
 		this.model.selection("anodeSelection").set("ymin",-electrodeThickness-FSEzSpacing/4);
 		this.model.selection("anodeSelection").set("ymax",FSEzSpacing/4);		
@@ -81,7 +90,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		this.model.selection().create("cathodeSelection","Box");
 		this.model.selection("cathodeSelection").set("condition", "inside");
 		this.model.selection("cathodeSelection").set("entitydim",1);
-		this.model.selection("cathodeSelection").set("xmin",innerTPCradius-FSEzSpacing/4);
+		this.model.selection("cathodeSelection").set("xmin",innerTPCradius()-FSEzSpacing/4);
 		this.model.selection("cathodeSelection").set("xmax",TPCRadius()+2*FSEThickness+FSErSpacing+FSErSpacing);
 		this.model.selection("cathodeSelection").set("ymin",TPCLength()-FSEzSpacing/4);
 		this.model.selection("cathodeSelection").set("ymax",TPCLength()+electrodeThickness+FSEzSpacing/4);		
@@ -93,7 +102,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 	
 	// random number generator, made to allow for realistic range of resistance values
 		private double ResidualResistance(){
-			double number=0*Math.random()-0;           //a*b+-c: c= max deviation (plus or minus), a=2*c
+			double number=10000*Math.random()-5000;           //a*b+-c: c= max deviation (plus or minus), a=2*c
 			return(number);
 		}
 	
@@ -104,7 +113,7 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		double rmin = TPCRadius() - FSErSpacing/4;        //Outer Strips
 		double rmax = rmin + FSEThickness + FSErSpacing/2;//Outer Strips
 		
-		double rmin2 = innerTPCradius-FSErSpacing/4;       //inner strips
+		double rmin2 = innerTPCradius()-FSErSpacing/4;       //inner strips
 		double rmax2 = rmin2 + FSEThickness+FSErSpacing/2; //inner strips
 		
 		double z1 = FSEzSpacing+FSELength/2;
@@ -112,8 +121,8 @@ public class TPCSingle extends TPC {	     //this file builds off of TPC.java
 		double zmin = z1 + offsetz()*actualNumber - FSEzSpacing/4; //Outer Strips
 		double zmax = zmin + FSELength + FSEzSpacing/2;            //Outer Strips
 		
-		double zmin2 = z1 + offsetz()*actualNumber - FSEzSpacing/4; //Outer Strips
-		double zmax2 = zmin + FSELength + FSEzSpacing/2;            //Outer Strips
+		double zmin2 = z1 + offsetz()*actualNumber - FSEzSpacing/4; //inner Strips
+		double zmax2 = zmin + FSELength + FSEzSpacing/2;            //inner Strips
 		
 		this.makeBoxSelection(name,rmin,zmin,rmax,zmax);          //Outer strip selections
 		this.makeBoxSelection(name2, rmin2, zmin2, rmax2, zmax2); //inner strip selections
