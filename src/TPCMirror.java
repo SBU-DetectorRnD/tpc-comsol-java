@@ -30,7 +30,7 @@ public class TPCMirror extends TPC {
 	public TPCMirror(){      //I think this is necessary when this.makeCircuit, this.* not in TPC.java
 		this.makeSelections();
 		this.makeTerminals();
-		this.makeCircuit(); 
+		//this.makeCircuit(); 
 	}
 	
 	public void addFSEs(){
@@ -198,7 +198,8 @@ public class TPCMirror extends TPC {
 		String selection = "FSE"+actualNumber+"Selection"; 
 		this.model.physics("current").feature().create(terminal,"Terminal");
 		this.model.physics("current").feature(terminal).selection().named(selection);
-		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+		this.model.physics("current").feature(terminal).set("TerminalType",1,"Voltage");
+	    this.model.physics("current").feature(terminal).set("V0",(actualNumber+1.0)/(FSENumber+1.0)*Voltage);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -207,14 +208,19 @@ public class TPCMirror extends TPC {
 		String selection = "InnerFSE"+actualNumber+"Selection"; 
 		this.model.physics("current").feature().create(terminal,"Terminal");
 		this.model.physics("current").feature(terminal).selection().named(selection);
-		this.model.physics("current").feature(terminal).set("TerminalType",1,"Circuit");
+		this.model.physics("current").feature(terminal).set("TerminalType",1,"Voltage");
+	    this.model.physics("current").feature(terminal).set("V0",(actualNumber+1.0)/(FSENumber+1.0)*Voltage);
+	    
 	}
 	
 	public void makeCathodeTerminal(){
 		this.model.physics("current").feature().create("cathodeTerminal","Terminal");
 		this.model.physics("current").feature("cathodeTerminal").selection().named("cathodeSelection");
-		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Circuit");		
+		this.model.physics("current").feature("cathodeTerminal").set("TerminalType",1,"Voltage");
+	    this.model.physics("current").feature("cathodeTerminal").set("V0", Voltage);
 	}
+	
+    
 	
 	public void makeGroundStripTerminal(){
 		//this.model.physics("current").feature().create("cageTerminal", "Ground", 1);//Here is the line where the connection between the faraday cage and anode terminal

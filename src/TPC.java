@@ -18,7 +18,7 @@ public class TPC {
 	} 
 	                             
 	//FSE means Field Shaping Elements
-	public int FSENumber = 10; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
+	public int FSENumber = 80; // Number of strips in one vertial line (mirror contains two per inner and outer, single contains one per inner and outer)
 	public double FSELength = 9.0; // Strip length in z, 9.0 (mm)
 	public double FSEzSpacing = 1.0; // Strip spacing in z, 1 (mm)
 	public double FSEThickness = .035; // Strip thickness in r, 
